@@ -8,8 +8,8 @@ Route::get('/', function () {
 });
 
 // API's PARA MANEJAR EL MODELO: Estudiante
-Route::get('/API/user',             [EstudianteController::class, 'index']);
-Route::get('/API/user/{id}',        [EstudianteController::class, 'getUser']);
-Route::post('/API/user/create',     [EstudianteController::class, 'addUser']);
-Route::put('/API/user/update',      [EstudianteController::class, 'updateUser']);
-Route::delete('/API/user/delete',   [EstudianteController::class, 'deleteUser']);
+Route::get('/api/user',             [EstudianteController::class, 'index']);
+Route::get('/api/user/{id}',        [EstudianteController::class, 'getUser']);
+Route::post('/api/user/create',     [EstudianteController::class, 'addUser']);
+Route::patch('/api/user/update',    [EstudianteController::class, 'updateUser']);
+Route::delete('/api/user/delete',   [EstudianteController::class, 'deleteUser']);

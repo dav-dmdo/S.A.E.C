@@ -6,24 +6,112 @@ use Illuminate\Http\Request;
 
 class EstudianteController extends Controller
 {
-    public function index(){
-        return "Mostrando todos los usuarios...";
+    // /api/user
+    public function index()
+    {
+        return [
+            "code" => "200",
+            "message" => "Se han mostrado todos los usuarios!"
+        ];
     }
 
-    public function getUser($id){
-        return "Usuario ID:{$id}";
+    // /api/user/{id}   | FALTA LA LÓGICA
+    public function getUser(Request $req)
+    {
+        // 1. Se extrañe la info de la solicitud HTTP/POST
+        $id = $req->input("id");
+
+        // ... LÓGICA ...
+        $sucess = true;
+
+        // 9. Respuesta
+        if ($sucess) {
+            return [
+                "code" => "200",
+                "message" => "El usuario existe!",
+                "id" => $id
+            ];
+        } else {
+            return [
+                "code" => "400",
+                "message" => "El usuario no existe!",
+                "id" => $id
+            ];
+        }
     }
 
-    public function addUser($id){
-        return redirect("/");
-        // return "Añadiendo usuario ID:{$id}";
+    // /api/user/create | FALTA LA LÓGICA
+    public function addUser(Request $req)
+    {
+        // 1. Se extrañe la info de la solicitud HTTP/POST
+        $id = $req->input("id");
+
+        // ... LÓGICA ...
+        $sucess = true;
+
+        // 9. Respuesta
+        if ($sucess) {
+            return [
+                "code" => "200",
+                "message" => "El usuario se agregó correctamente!",
+                "id" => $id
+            ];
+        } else {
+            return [
+                "code" => "400",
+                "message" => "El usuario no se agregó!",
+                "id" => $id
+            ];
+        }
     }
 
-    public function updateUser($id){
-        return "Actualizando usuario ID:{$id}";
+    // /api/user/update | FALTA LA LÓGICA
+    public function updateUser(Request $req)
+    {
+        // 1. Se extrañe la info de la solicitud HTTP/PATCH
+        $id = $req->input("id");
+
+        // ... LÓGICA ...
+        $sucess = true;
+
+        // 9. Respuesta
+        if ($sucess) {
+            return [
+                "code" => "200",
+                "message" => "El usuario se actualizó!",
+                "id" => $id
+            ];
+        } else {
+            return [
+                "code" => "400",
+                "message" => "El usuario no se actualizó!",
+                "id" => $id
+            ];
+        }
     }
 
-    public function deleteUser($id){
-        return "Eliminando usuario ID:{$id}";
+    // /api/user/delete | FALTA LA LÓGICA
+    public function deleteUser(Request $req)
+    {
+        // 1. Se extrañe la info de la solicitud HTTP/DELETE
+        $id = $req->input("id");
+
+        // ... LÓGICA ...
+        $sucess = true;
+
+        // 9. Respuesta
+        if ($sucess) {
+            return [
+                "code" => "200",
+                "message" => "El usuario se eliminó!",
+                "id" => $id
+            ];
+        } else {
+            return [
+                "code" => "400",
+                "message" => "El usuario no se eliminó!",
+                "id" => $id
+            ];
+        }
     }
 }
