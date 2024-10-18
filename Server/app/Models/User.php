@@ -70,7 +70,7 @@ class User extends Authenticatable
             "user_email" => 'string',
             "user_birthdate" => 'string',
             "user_gender" => 'string',
-            "created_at" => 'datatime'
+            "created_at" => 'timestamp'
         ];
     }
 }
