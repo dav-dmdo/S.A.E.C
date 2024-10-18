@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Creación de 10 filas en 'laravel/users/'
         User::factory(10)->create();
     }
 }
