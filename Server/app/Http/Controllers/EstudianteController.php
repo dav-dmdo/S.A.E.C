@@ -16,10 +16,10 @@ class EstudianteController extends Controller
     }
 
     // /api/user/{id}   | FALTA LA LÓGICA
-    public function getUser(Request $req)
+    public function searchUser($id)
     {
         // 1. Se extrañe la info de la solicitud HTTP/POST
-        $id = $req->input("id");
+        
 
         // ... LÓGICA ...
         $sucess = true;
