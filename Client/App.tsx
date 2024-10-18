@@ -1,174 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './LoginScreen'; // Ruta a tu pantalla de login
+import Home from './Home'; // Ruta a tu pantalla Home
+import RegisterScreen from './RegisterScreen'; // Ruta a tu pantalla de registro
+import { Image, TouchableOpacity, View } from 'react-native';
 
-// Pantalla principal del registro
-const RegisterScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+const Stack = createNativeStackNavigator();
 
-  const handleRegister = () => {
-    console.log("Registro iniciado con:", email, password, rememberMe);
-  };
-
-  const toggleRememberMe = () => {
-    setRememberMe(!rememberMe);
-  };
-
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Image 
-        style={styles.logo}
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s' }}
-      />
-
-      <Text style={styles.title}>SISTEMA DE ASISTENCIA Y EVALUACIÓN CONTINUA</Text>
-      <Text style={styles.subtitle}>ENTRA AL S.A.E.C. CON TU CORREO DE LA UNIVERSIDAD</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <View style={styles.rememberContainer}>
-        <TouchableOpacity onPress={toggleRememberMe} style={styles.rememberButton}>
-          <View style={styles.checkBox}>
-            {rememberMe && <View style={styles.checked} />}
-          </View>
-          <Text style={styles.rememberText}>Acuérdame</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.googleButton}>
-        <Image 
-          style={styles.googleIcon}
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png' }}
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ headerShown: false }} // Oculta el header en la pantalla de login
         />
-        <Text style={styles.googleButtonText}>Iniciar sesión con Google</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
-        <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity>
-        <Text style={styles.registerText}>Regístrate aquí</Text>
-      </TouchableOpacity>
-    </View>
+        <Stack.Screen 
+          name="Home" 
+          component={Home} 
+          options={{
+            headerLeft: () => (
+              <Image
+                source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
+                style={{ width: 100, height: 40, resizeMode: 'contain', marginLeft: 10 }}
+              />
+            ),
+            headerRight: () => (
+              <TouchableOpacity style={{ padding: 10 }}>
+                <View style={{ width: 25, height: 3, backgroundColor: '#000', marginBottom: 4 }} />
+                <View style={{ width: 25, height: 3, backgroundColor: '#000', marginBottom: 4 }} />
+                <View style={{ width: 25, height: 3, backgroundColor: '#000' }} />
+              </TouchableOpacity>
+            ),
+            headerBackVisible: false, // Desactiva el botón de "back"
+          }}
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen} 
+          options={{ headerShown: false }} // Ocultar la barra en RegisterScreen
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
-// Estilos de la pantalla
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: 150,
-    height: 50,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#FF6600',
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  rememberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  rememberButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkBox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  checked: {
-    width: 12,
-    height: 12,
-    backgroundColor: '#FF6600',
-  },
-  rememberText: {
-    fontSize: 16,
-  },
-  forgotPassword: {
-    color: '#FF6600',
-  },
-  googleButton: {
-    flexDirection: 'row',
-    backgroundColor: '#4285F4',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  loginButton: {
-    backgroundColor: '#FF6600',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  registerText: {
-    textAlign: 'center',
-    color: '#0000FF',
-  },
-});
-
-export default RegisterScreen;
+export default App;
