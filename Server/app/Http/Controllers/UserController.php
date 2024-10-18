@@ -10,13 +10,13 @@ class UserController extends Controller
 
     public function index()
     {
-        return "200 OK";
+        $user = User::all();
+        return $user;
     }
 
-    public function show($username)
+    public function show(User $user)
     {
-        
-        return $username;
+        return $user;
     }
 
     public function store(Request $request)

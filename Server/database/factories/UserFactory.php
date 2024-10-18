@@ -32,10 +32,8 @@ class UserFactory extends Factory
             'user_gender' => "Masculino",
             'user_birthdate' => fake()->date('d-m-Y'),
             'username' => fake()->userName(),
-
             'user_email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-
             'remember_token' => Str::random(10)
         ];
     }
