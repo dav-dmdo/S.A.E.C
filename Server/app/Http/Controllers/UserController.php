@@ -16,9 +16,9 @@ class UserController extends Controller
         return "200 OK";
     }
 
-    public function show($uuid)
+    public function show($user_id)
     {
-        $user = User::find($uuid);
+        $user = User::find($user_id);
         return $user;
     }
 
