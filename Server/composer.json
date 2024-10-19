@@ -6,10 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "jenssegers/mongodb": "^5.1",
+        "jenssegers/mongodb": "*",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "mongodb/laravel-mongodb": "^5.1",
+        "mongodb/laravel-mongodb": "*",
         "mongodb/mongodb": "^1.20"
     },
     "require-dev": {

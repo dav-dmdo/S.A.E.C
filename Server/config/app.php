@@ -1,5 +1,6 @@
 <?php
 
+use MongoDB\Laravel\MongoDBServiceProvider;
 
 return [
 
@@ -126,8 +127,7 @@ return [
 
     'providers' => [
         // Otros proveedores...
-        MongoDB\Laravel\MongoDBServiceProvider::class,
+        MongoDBServiceProvider::class
     ],
-
 
 ];

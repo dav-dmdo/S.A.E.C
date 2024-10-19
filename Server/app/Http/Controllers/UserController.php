@@ -16,9 +16,15 @@ class UserController extends Controller
         return "200 OK";
     }
 
+<<<<<<< HEAD
     public function show($user_id)
     {
         $user = User::find($user_id);
+=======
+    public function show($uuid)
+    {
+        $user = User::find($uuid);
+>>>>>>> 3fca46b (feat(API): User API created successfully)
         return $user;
     }
 
