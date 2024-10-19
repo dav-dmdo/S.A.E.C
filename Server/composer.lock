@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4ec47001bfd79f5aaa763db8479928b",
+    "content-hash": "0e86865472bd01a70b1f3b84b9d09dda",
     "packages": [
         {
             "name": "brick/math",
@@ -1886,7 +1886,28 @@
                     "MongoDB\\Laravel\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "MongoDB\\Laravel\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "test:coverage": [
+                    "phpunit --coverage-clover ./coverage.xml"
+                ],
+                "cs": [
+                    "phpcs"
+                ],
+                "cs:fix": [
+                    "phpcbf"
+                ],
+                "rector": [
+                    "rector"
+                ]
+            },
             "license": [
                 "MIT"
             ],

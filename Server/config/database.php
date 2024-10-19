@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mongodb'),
+    'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -110,11 +110,6 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
-        ],
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('DB_URI'),
-            'database' => env('DB_DATABASE'), // Asegúrate de que este sea el nombre correcto de tu base de datos
         ],
 
     ],
