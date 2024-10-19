@@ -10,5 +10,5 @@ Route::get('/', function () {
 // User API's
 Route::apiResource('api/user', UserController::class)
     ->parameters([
-        "user" => "id"
+        "user" => "user_id"
     ]);
