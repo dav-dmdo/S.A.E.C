@@ -13,12 +13,12 @@ class UserController extends Controller
 
     public function index()
     {
-        return "200 OK";
+        return User::all();
     }
 
-    public function show($uuid)
+    public function show($user_id)
     {
-        $user = User::find($uuid);
+        $user = User::find($user_id);
         return $user;
     }
 
