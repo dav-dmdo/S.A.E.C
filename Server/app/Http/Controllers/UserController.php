@@ -13,18 +13,12 @@ class UserController extends Controller
 
     public function index()
     {
-        return "200 OK";
+        return User::all();
     }
 
-<<<<<<< HEAD
     public function show($user_id)
     {
         $user = User::find($user_id);
-=======
-    public function show($uuid)
-    {
-        $user = User::find($uuid);
->>>>>>> 3fca46b (feat(API): User API created successfully)
         return $user;
     }
 
@@ -75,7 +69,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
-        
+
         $user->delete();
         return response()->json($user, 204);
     }
