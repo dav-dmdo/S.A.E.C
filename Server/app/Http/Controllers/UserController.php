@@ -27,11 +27,16 @@ class UserController extends Controller
         }
 
         $info = Student::where("user_ci", $user_ci)->first();
-        if (!$info) {
-            $info = Teacher::where("user_ci", $user_ci)->first();
+        if ($info) {
+            return array_merge($user->toArray(), $info->toArray());;
         }
 
-        return array_merge($user->toArray(), $info->toArray());;
+        $info = Teacher::where("user_ci", $user_ci)->first();
+        if ($info) {
+            return array_merge($user->toArray(), $info->toArray());;
+        }
+
+        return $user;
     }
 
     public function store(Request $request)
