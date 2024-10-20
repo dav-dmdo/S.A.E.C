@@ -45,11 +45,7 @@ class UserController extends Controller
             // Crear el usuario
             $data = $request->all();
             $data['password'] = Hash::make($request->password);
-
-            // Aquí se supone que 'user_id' se debe incluir en la creación del usuario
             $user = User::create($data);
-            $user['user_ci'] = $data["user_ci"];
-
             return response()->json($user, 201);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
