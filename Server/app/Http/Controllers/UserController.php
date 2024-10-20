@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +21,17 @@ class UserController extends Controller
     public function show($user_ci)
     {
         $user = User::where("user_ci", $user_ci)->first();
-        return $user;
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $info = Student::where("user_ci", $user_ci)->first();
+        if (!$info) {
+            $info = Teacher::where("user_ci", $user_ci)->first();
+        }
+
+        return array_merge($user->toArray(), $info->toArray());;
     }
 
     public function store(Request $request)
@@ -54,7 +66,6 @@ class UserController extends Controller
             $user->password = $password;
             $user->save();
             return response()->json($user, 201);
-            
         } else {
             $user->update($request->all());
             $user->save();
@@ -70,7 +81,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
-        
+
         $user->delete();
         return response()->json($user, 204);
     }
