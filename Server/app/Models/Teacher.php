@@ -11,14 +11,14 @@ class Teacher extends Model
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
-        "user_id",
+        "user_ci",
         "teacher_card_id"
     ];
 
     protected function casts()
     {
         return [
-            'user_id' => 'int',
+            'user_ci' => 'int',
             'teacher_card_id' => 'int'
         ];
     }

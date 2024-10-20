@@ -11,15 +11,20 @@ class Student extends Model
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
-        "user_id",
+        "user_ci",
         "student_card_id",
         "student_enrollment_date"
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected function casts()
     {
         return [
-            'user_id' => 'int',
+            'user_ci' => 'int',
             'student_card_id' => 'int'
         ];
     }
