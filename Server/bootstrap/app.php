@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             Route::prefix('api/v1/academic-year')
                 ->group(base_path('routes/academicYear.php'));
+            Route::prefix('api/v1/term')
+                ->group(base_path('routes/term.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {})
