@@ -16,9 +16,9 @@ class UserController extends Controller
         return User::all();
     }
 
-    public function show($user_id)
+    public function show($user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();
         return $user;
     }
 
@@ -31,7 +31,7 @@ class UserController extends Controller
 
             // Aquí se supone que 'user_id' se debe incluir en la creación del usuario
             $user = User::create($data);
-            $user['user_id'] = $data["user_id"];
+            $user['user_ci'] = $data["user_ci"];
 
             return response()->json($user, 201);
         } catch (\Throwable $th) {
@@ -39,9 +39,9 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $user_id)
+    public function update(Request $request, $user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();
 
         // Existencia del usuario
         if (!$user) {
@@ -54,6 +54,7 @@ class UserController extends Controller
             $user->password = $password;
             $user->save();
             return response()->json($user, 201);
+            
         } else {
             $user->update($request->all());
             $user->save();
@@ -61,9 +62,9 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request, $user_id)
+    public function destroy($user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();;
 
         // Existencia del usuario
         if (!$user) {
