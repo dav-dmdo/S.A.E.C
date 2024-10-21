@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AcademicYear extends Model
+ class AcademicYear extends Model
 {
 
     use HasFactory;
@@ -14,7 +14,7 @@ class AcademicYear extends Model
 
     protected $primaryKey = 'academic_year_id';
 
-    protected $incrementing = false;
+    public $incrementing = false;
 
     protected $dateFormat = 'date:dd-MM-YYYY';
 

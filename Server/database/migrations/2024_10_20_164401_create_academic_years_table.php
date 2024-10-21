@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->date('academic_year_start_date');
             $table->date('academic_year_end_date');
-            $table->date('academic_year_description');
+            $table->text('academic_year_description');
             $table->timestamps();
         });
     }
