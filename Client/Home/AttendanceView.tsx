@@ -39,19 +39,6 @@ const AttendanceRecord = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Barra superior con logo y menú */}
-      <View style={styles.topBar}>
-        <Image 
-          source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
-          style={styles.logo}
-        />
-        <TouchableOpacity style={styles.menuButton}>
-          <View style={styles.menuBar} />
-          <View style={styles.menuBar} />
-          <View style={styles.menuBar} />
-        </TouchableOpacity>
-      </View>
-
       {/* Sección de título */}
       <View style={styles.header}>
         <Icon name="check-circle" size={30} color="#fff" />

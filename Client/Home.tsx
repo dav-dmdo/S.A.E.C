@@ -2,12 +2,19 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App';
 
 const Home = () => {
-  return (
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();  return (
+
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
 
+      <View style={styles.section}>
+          <Text style={styles.sectionTitle2}>Bienvenido a S.A.E.C!</Text>
+        </View>
         {/* Sección de estadísticas con cuadros */}
         <View style={styles.gridContainer}>
           <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#fcd46e' }]}>
@@ -28,7 +35,10 @@ const Home = () => {
             <Text style={styles.gridCount}>4</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#a6e7f4' }]}>
+          <TouchableOpacity 
+            style={[styles.gridItem, { backgroundColor: '#a6e7f4' }]} 
+            onPress={() => navigation.navigate('AttendanceView')}  // Navegar a la vista de asistencias
+          >
             <Icon name="check-circle" size={40} color="#000" />
             <Text style={styles.gridTitle}>ASISTENCIAS</Text>
             <Text style={styles.gridCount}>27</Text>
@@ -204,18 +214,6 @@ const Home = () => {
             </View>
           </View>
         </ScrollView>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerLink}>Inicio</Text>
-          <Text style={styles.footerLink}>Asistencias</Text>
-          <Text style={styles.footerLink}>Perfil</Text>
-          <Text style={styles.footerLink}>Profesores</Text>
-          <Text style={styles.footerLink}>FAQs</Text>
-          <Text style={styles.footerLink}>Developers</Text>
-          <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
-        </View>
-
       </ScrollView>
       <SafeAreaView edges={['bottom']} />
     </SafeAreaView>
@@ -265,6 +263,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+  },
+  sectionTitle2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center', 
+    marginBottom: 20,
   },
   gridTitle: {
     fontSize: 16,
