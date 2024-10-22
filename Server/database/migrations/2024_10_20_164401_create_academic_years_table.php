@@ -12,12 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Academic_Year', function (Blueprint $table) {
-            $table->integer('academic_year_id');
-            $table->primary(['academic_year_id'], 'PK_academic_year');
+        Schema::create('academic_years', function (Blueprint $table) {
+            $table->integer('academic_year_id')->primary('PK_academic_year')->unique();
+            //$table->primary(['academic_year_id'], 'PK_academic_year');
 
-            $table->date('academic_year_start_date');
-            $table->date('academic_year_end_date');
+            $table->date('academic_year_start_date')->unique();
+            $table->date('academic_year_end_date')->unique();
             $table->text('academic_year_description');
             $table->timestamps();
         });

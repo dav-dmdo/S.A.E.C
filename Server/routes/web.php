@@ -13,9 +13,3 @@ Route::apiResource('api/user', UserController::class)
     ->parameters([
         "user" => "user_id"
     ]);
-
-// Academic Year API's
-Route::apiResource('api/v1/academic-year', AcademicYearController::class)
-    ->parameters([
-        "academic-year" => "id"
-    ]);

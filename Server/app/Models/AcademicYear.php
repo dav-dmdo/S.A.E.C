@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
     use HasFactory;
 
-    protected $table = 'Academic_Year';
-
     protected $primaryKey = 'academic_year_id';
 
     public $incrementing = false;

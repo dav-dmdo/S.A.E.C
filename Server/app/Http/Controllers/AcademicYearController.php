@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AcademicYear;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAcademicYearRequest;
-use App\Http\Requests\UpdateAcademicYearRequest;
+use Illuminate\Http\Request;
 
 class AcademicYearController extends Controller
 {
@@ -18,17 +16,9 @@ class AcademicYearController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAcademicYearRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -36,17 +26,7 @@ class AcademicYearController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AcademicYear $academicYear, $id)
-    {
-
-        $data = AcademicYear::where('academic_year_id', $id)->get();
-        return response()->json($data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(AcademicYear $academicYear)
+    public function show(string $id)
     {
         //
     }
@@ -54,7 +34,7 @@ class AcademicYearController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAcademicYearRequest $request, AcademicYear $academicYear)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -62,7 +42,7 @@ class AcademicYearController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AcademicYear $academicYear)
+    public function destroy(string $id)
     {
         //
     }
