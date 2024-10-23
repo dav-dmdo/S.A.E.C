@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('terms', function (Blueprint $table) {
+            $table->id();
             $table->integer('academic_year_id');
             $table->enum('term_id', [1, 2, 3, 4]);
             $table->string('term_name');
@@ -22,9 +23,8 @@ return new class extends Migration
             // Creo que puede haber problemas con el onDelete y onUpdate porque NO puede ser null el id del anio academico
             // pero no quiero que se borre Cascade.
 
-            $table->primary(['academic_year_id', 'term_id']);
             $table->foreign('academic_year_id')->references('academic_year_id')->on('academic_years');
-
+            $table->unique(['academic_year_id', 'term_id'], 'unique_term_combination');
 
 
             $table->timestamps();

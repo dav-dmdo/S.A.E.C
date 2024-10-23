@@ -17,7 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // Creación de 10 filas en 'laravel/users/'
         User::factory(10)->create();
-        AcademicYear::factory(10)->create();
-
+        // AcademicYear::factory(10)->create();
+        $this->call([
+            AcademicYearSeeder::class,
+            TermSeeder::class,
+        ]);
     }
 }
