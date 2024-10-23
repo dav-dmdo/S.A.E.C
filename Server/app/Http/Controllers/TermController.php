@@ -3,19 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\AcademicYear;
 use App\Models\Term;
 use Illuminate\Http\Request;
 
-class AcademicYearController extends Controller
+class TermController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $academicYear = AcademicYear::all();
-        return response()->json($academicYear, 200);
+        $term = Term::all();
+        return response()->json($term, 200);
     }
 
     /**
@@ -25,28 +24,14 @@ class AcademicYearController extends Controller
     {
         $validated = $request->validate([
             'academic_year_id' => 'required|integer',
-            'term_id' => 'required|integer',
+            'term_id' => 'required|integer|in:1,2,3,4',
             'term_name' => 'required|string|max:255',
-            'term_start_date' => 'required|date',
-            'term_end_date' => 'required|date',
+            'term_start_date' => 'required|date:d-m-Y',
+            'term_end_date' => 'required|date:d-m-Y',
             'term_type' => 'required|string|max:255',
         ]);
 
-        // Verificar que la combinación no existe antes de insertar
-        $exists = Term::where('academic_year_id', $request->academic_year_id)
-            ->where('term_id', $request->term_id)
-            ->exists();
-
-        if ($exists) {
-            return  response()->json([
-                'message' => 'The term already exists',
-                'Term' => $exists
-            ], 201);
-        }
-
-        // Crear el nuevo término si no existe
         $created = Term::create($validated);
-
         return response()->json($created, 201);
     }
 

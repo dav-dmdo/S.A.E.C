@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AcademicYearFactory extends Factory
 {
-    protected $table = 'Academic_Year';
+    protected $table = 'academic_years';
     /**
      * Define the model's default state.
      *
