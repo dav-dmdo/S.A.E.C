@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
+use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 use Database\Factories\AcademicYearFactory;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,12 +17,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Creación de 10 filas en 'laravel/users/'
-        User::factory(10)->create();
-        // AcademicYear::factory(10)->create();
+
         $this->call([
             AcademicYearSeeder::class,
             TermSeeder::class,
         ]);
+        // 5 USUARIOS DE TIPO ESTUDIANTES
+        for ($i = 0; $i < 5; $i++) {
+            $user = User::factory()->create();
+            Student::factory()->create([
+                'user_ci' => $user->user_ci
+            ]);
+        };
+
+        // 5 USUARIOS DE TIPO PROFESORES
+        for ($i = 0; $i < 5; $i++) {
+            $user = User::factory()->create();
+            Teacher::factory()->create([
+                'user_ci' => $user->user_ci
+            ]);
+        };
     }
 }

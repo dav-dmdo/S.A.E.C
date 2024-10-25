@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +18,24 @@ class UserController extends Controller
         return User::all();
     }
 
-    public function show($user_id)
+    public function show($user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $info = Student::where("user_ci", $user_ci)->first();
+        if ($info) {
+            return array_merge($user->toArray(), $info->toArray());;
+        }
+
+        $info = Teacher::where("user_ci", $user_ci)->first();
+        if ($info) {
+            return array_merge($user->toArray(), $info->toArray());;
+        }
+
         return $user;
     }
 
@@ -28,20 +45,16 @@ class UserController extends Controller
             // Crear el usuario
             $data = $request->all();
             $data['password'] = Hash::make($request->password);
-
-            // Aquí se supone que 'user_id' se debe incluir en la creación del usuario
             $user = User::create($data);
-            $user['user_id'] = $data["user_id"];
-
             return response()->json($user, 201);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
 
-    public function update(Request $request, $user_id)
+    public function update(Request $request, $user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();
 
         // Existencia del usuario
         if (!$user) {
@@ -61,9 +74,9 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request, $user_id)
+    public function destroy($user_ci)
     {
-        $user = User::find($user_id);
+        $user = User::where("user_ci", $user_ci)->first();;
 
         // Existencia del usuario
         if (!$user) {

@@ -24,12 +24,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => fake()->numberBetween(1000000, 99999999),
+            'user_ci' => fake()->unique()->numberBetween(1000000, 99999999),
             'user_first_name' => fake()->firstName(),
             'user_middle_name' => fake()->firstName(),
             'user_first_surname' => fake()->lastName(),
             'user_second_surname' => fake()->lastName(),
-            'user_gender' => "Masculino",
+            'user_gender' => fake()->randomElement(['Masculino', 'Femenino']),
             'user_birthdate' => fake()->date('d-m-Y'),
             'username' => fake()->userName(),
             'user_email' => fake()->unique()->safeEmail(),
