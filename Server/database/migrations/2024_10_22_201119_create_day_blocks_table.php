@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('day_blocks', function (Blueprint $table) {
-            $table->id('day_block_id');
+            $table->id();
+            $table->integer('day_block_id')->unique();
             $table->string('day_block_day_1');
-            $table->string('day_block_day_2');
+            $table->string('day_block_day_2')->nullable();
             $table->string('day_block_number_of_days');
+
+            $table->unique(['day_block_day_1', 'day_block_day_2'], 'unique_day_block_combination');
             $table->timestamps();
         });
     }
