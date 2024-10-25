@@ -19,7 +19,7 @@ class AcademicYearFactory extends Factory
     public function definition(): array
     {
 
-        $startDate = Carbon::parse(fake()->date('Y-m-d', 'now'));
+        $startDate = Carbon::parse(fake()->date('d-m-Y', 'now'));
 
         return [
             'academic_year_id' => fake()->numberBetween(1, 100),
