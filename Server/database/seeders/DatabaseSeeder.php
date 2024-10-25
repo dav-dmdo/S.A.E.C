@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,7 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Creación de 10 filas en 'laravel/users/'
-        User::factory(10)->create();
+        // 5 USUARIOS DE TIPO ESTUDIANTES
+        for ($i = 0; $i < 5; $i++) {
+            $user = User::factory()->create();
+            Student::factory()->create([
+                'user_ci' => $user->user_ci
+            ]);
+        };
+
+        // 5 USUARIOS DE TIPO PROFESORES
+        for ($i = 0; $i < 5; $i++) {
+            $user = User::factory()->create();
+            Teacher::factory()->create([
+                'user_ci' => $user->user_ci
+            ]);
+        };
     }
 }

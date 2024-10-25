@@ -15,12 +15,9 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    // Conoce la primary key
-    protected $primaryKey = 'user_id';
-
     // Permite la asignación de datos masivo: User::create($request->all())
     protected $fillable = [
-        "user_id",
+        "user_ci",
         "user_first_name",
         "user_middle_name",
         "user_first_surname",
@@ -32,7 +29,7 @@ class User extends Authenticatable
         "password",
         "remember_token"
     ];
-    
+
     // Oculta propiedades cuando se expone el modelo
     protected $hidden = [
         "password",
