@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('academic_year_id')->unique();
             $table->date('academic_year_start_date')->unique();
             $table->date('academic_year_end_date')->unique();
-            $table->text('academic_year_description');
             $table->timestamps();
         });
     }

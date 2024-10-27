@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->integer('academic_year_id');
             $table->enum('term_id', [1, 2, 3, 4]);
-            $table->string('term_name');
             $table->date('term_start_date');
             $table->date('term_end_date');
             $table->enum('term_type', ['First Term', 'Second Term', 'Third Term', 'Intensive Term']);
