@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('subject_id');
 
             $table->foreign('degree_id')->references('degree_id')->on('degrees');
-            $table->foreign('subject_id')->references('subject_id')->on('subject');
+            $table->foreign('subject_id')->references('subject_id')->on('subjects');
 
             $table->unique(['degree_id', 'subject_id'], 'unique_degree_subject_combination');
 
