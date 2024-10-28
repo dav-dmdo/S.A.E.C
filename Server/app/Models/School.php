@@ -11,6 +11,7 @@ class School extends Model
 
     // Permite la asignación de datos masivo: School::create($request->all())
     protected $fillable = [
+        "school_id",
         "faculty_id",
         "school_name",
         "school_description"
