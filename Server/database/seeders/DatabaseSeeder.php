@@ -18,10 +18,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        $this->call([
-            AcademicYearSeeder::class,
-            TermSeeder::class,
-        ]);
+        // No están listas ni bien configuradas
+        // $this->call([
+        //     AcademicYearSeeder::class,
+        //     TermSeeder::class,
+        // ]);
+
         // 5 USUARIOS DE TIPO ESTUDIANTES
         for ($i = 0; $i < 5; $i++) {
             $user = User::factory()->create();
