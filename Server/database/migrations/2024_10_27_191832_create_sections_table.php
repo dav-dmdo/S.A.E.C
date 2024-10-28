@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('section_capacity');
             $table->timestamps();
 
-            $table->foreign('subject_id')->references('subject_id')->on('subject');
+            $table->foreign('subject_id')->references('subject_id')->on('subjects');
             $table->foreign('teacher_id')->references('user_ci')->on('teachers');
             $table->foreign(['academic_year_id', 'term_id'])->references(['academic_year_id', 'term_id'])->on('terms');
             $table->foreign(['day_block_id', 'time_block_id'])->references(['day_block_id', 'time_block_id'])->on('time_blocks');
