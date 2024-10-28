@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
+use App\Models\Faculty;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
@@ -17,27 +18,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Con factory
+        $this->call([
+            UserSeeder::class
+        ]);
 
-        // No están listas ni bien configuradas
-        // $this->call([
-        //     AcademicYearSeeder::class,
-        //     TermSeeder::class,
-        // ]);
+        // Sin factory
+        $this->structureUniversity();
+    }
 
-        // 5 USUARIOS DE TIPO ESTUDIANTES
-        for ($i = 0; $i < 5; $i++) {
-            $user = User::factory()->create();
-            Student::factory()->create([
-                'user_ci' => $user->user_ci
-            ]);
-        };
+    private function structureUniversity() {
+        $facultad = new Faculty();
+        $facultad->faculty_name = "Facultad de Ingeniería";
+        $facultad->faculty_description = "Facultad de Ingeniería";
+        $facultad->save();
 
-        // 5 USUARIOS DE TIPO PROFESORES
-        for ($i = 0; $i < 5; $i++) {
-            $user = User::factory()->create();
-            Teacher::factory()->create([
-                'user_ci' => $user->user_ci
-            ]);
-        };
+        
     }
 }

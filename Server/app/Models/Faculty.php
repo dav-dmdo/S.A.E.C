@@ -11,6 +11,7 @@ class Faculty extends Model
 
         // Permite la asignación de datos masivo: Faculty::create($request->all())
         protected $fillable = [
+            "faculty_id",
             "faculty_name",
             "faculty_description"
         ];
