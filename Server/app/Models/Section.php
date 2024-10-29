@@ -35,6 +35,19 @@ class Section extends Model
         return $this->belongsTo(Teacher::class);
     }
 
+    // Uno a muchos (Una seccion tiene una materia)
+    public function subject() {
+        return $this->belongsTo(Subject::class);
+    }
+
+    // Uno a muchos (Una sección tiene ...)
+    // 
+
+    // Uno a muchos (Una sección tiene ...)
+    // ...
+
+    // Uno a muchos (Una sección tiene ...)
+    // ...
 
     protected function casts()
     {
