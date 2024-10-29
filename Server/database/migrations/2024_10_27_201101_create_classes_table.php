@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('section_id');
-            $table->integer('clase_number');
-            $table->date('clase_date');
-            $table->boolean('clase_is_canceled');
-            $table->enum('clase_type', ['Evaluation', 'Class']);
-            $table->string('clase_topic');
+            $table->integer('class_number');
+            $table->date('class_date');
+            $table->boolean('class_is_canceled');
+            $table->enum('class_type', ['Evaluation', 'Class']);
+            $table->string('class_topic');
 
-            $table->unique(['section_id','clase_number'],'unique_clase_combination');
+            $table->unique(['section_id', 'class_number'], 'unique_class_combination');
 
             $table->foreign('section_id')->references('id')->on('sections');
-            
+
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clases');
+        Schema::dropIfExists('classes');
     }
 };

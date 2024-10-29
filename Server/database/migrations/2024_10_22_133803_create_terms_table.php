@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// NOTE: TABLA PARA CREAR LOS REGISTROS DE LOS TRIMESTRES EN RELACIÓN CON EL AÑO ACADÉMICO
 return new class extends Migration
 {
     /**
@@ -14,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('terms', function (Blueprint $table) {
             $table->id();
-            $table->integer('academic_year_id');            // 2122, 2223, 2324, 2425, ...
-            $table->enum('term_id', [1, 2, 3, 4]);          // 1, 2, 3, 4
+            $table->integer('academic_year_id');
+            $table->enum('term_id', [1, 2, 3, 4]);
             $table->date('term_start_date');
             $table->date('term_end_date');
             $table->enum('term_type', ['First Term', 'Second Term', 'Third Term', 'Intensive Term']);

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('degree_id')->unique();
             $table->integer('school_id');
             $table->string('degree_name');
-
             $table->integer('degree_minimun_credits');
 
             $table->foreign('school_id')->references('school_id')->on('schools');
