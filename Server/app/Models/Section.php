@@ -25,6 +25,17 @@ class Section extends Model
         return $this->hasMany(Clase::class);
     }
 
+    // Muchos a muchos (Una sección tiene muchos estudiantes)
+    public function students() {
+        return $this->belongsToMany(Student::class);
+    }
+
+    // Uno a muchos (Una seccion tiene un profesor)
+    public function teacher() {
+        return $this->belongsTo(Teacher::class);
+    }
+
+
     protected function casts()
     {
         return [

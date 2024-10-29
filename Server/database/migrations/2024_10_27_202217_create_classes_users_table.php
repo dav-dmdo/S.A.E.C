@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classes_users', function (Blueprint $table) {
-            $table->id();
+            $table->id();                                       // ID DE LA TABLA ATTENDANCE
+
             $table->unsignedBigInteger('class_id');
             $table->integer('user_id');
+
             $table->time('attendance_arrival');
             $table->time('attendance_departure');
             $table->enum('attendance_rating', [-2, -1, 0, 1, 2]);

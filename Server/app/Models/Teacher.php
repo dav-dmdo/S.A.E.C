@@ -20,6 +20,11 @@ class Teacher extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Uno a muchos (Un profesor tiene muchas secciones)
+    public function sections() {
+        return $this->hasMany(Section::class);
+    }
+
     protected function casts()
     {
         return [

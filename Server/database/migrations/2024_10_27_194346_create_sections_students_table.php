@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('sections_students', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('section_id');
             $table->integer('student_id');
+            
             $table->enum('status', ['Approved', 'Failed', 'Canceled']);
             $table->timestamps();
 
