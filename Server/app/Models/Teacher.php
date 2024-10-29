@@ -14,6 +14,7 @@ class Teacher extends Model
         "teacher_card_id"
     ];
 
+    // Uno a uno (Un profesor es un user)
     public function user()
     {
         return $this->belongsTo(User::class);

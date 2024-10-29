@@ -17,6 +17,12 @@ class Degree extends Model
         return $this->belongsTo(School::class);
     }
 
+    // Muchos a Muchos (Una carrera tiene "ve" muchas materias)
+    public function subjects() {
+        return $this->belongsToMany(Subject::class);
+    }
+
+
     protected function casts()
     {
         return [

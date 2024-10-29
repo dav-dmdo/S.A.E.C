@@ -20,6 +20,11 @@ class Section extends Model
         "section_capacity",
     ];
 
+    // Uno a muchos (Una sección tiene muchas clases)
+    public function classes() {
+        return $this->hasMany(Clase::class);
+    }
+
     protected function casts()
     {
         return [

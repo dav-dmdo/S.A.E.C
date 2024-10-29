@@ -15,6 +15,7 @@ class Student extends Model
         "student_enrollment_date"
     ];
 
+    // Uno a uno (Un estudiante es un user)
     public function user()
     {
         return $this->belongsTo(User::class);

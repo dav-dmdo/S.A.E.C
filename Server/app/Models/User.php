@@ -36,14 +36,21 @@ class User extends Authenticatable
         "remember_token",
     ];
 
+    // Uno a uno (Un usuario es un profesor)
     public function teacher()
     {
         return $this->hasOne(Teacher::class);
     }
 
+    // Uno a uno (Un usuario es un estudiante)
     public function student()
     {
         return $this->hasOne(Student::class);
+    }
+
+    // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
+    public function classes() {
+        return $this->belongsToMany(Clase::class);
     }
 
     protected function casts(): array
