@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
-            $table->string('subject_id')->unique();
+            $table->id("subject_id");
             $table->string('subject_name')->unique();
             $table->string('subject_description');
             $table->timestamps();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->string('subject_id');
+            $table->unsignedBigInteger('subject_id');
             $table->integer('section_number');
             $table->integer('academic_year_id');
             $table->enum('term_id', [1, 2, 3, 4]);
