@@ -11,7 +11,6 @@ class Department extends Model
 
     // Permite la asignación de datos masivo: Department::create($request->all())
     protected $fillable = [
-        "department_id",
         "school_id",
         "department_name",
         "department_description"
