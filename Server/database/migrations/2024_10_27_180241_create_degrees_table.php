@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('degrees', function (Blueprint $table) {
-            $table->id("degree_id");
-            $table->unsignedBigInteger('school_id');
-            $table->string('degree_name')->unique();
+            $table->id();
+            $table->string('degree_id')->unique();
+            $table->integer('school_id');
+            $table->string('degree_name');
+
             $table->integer('degree_minimun_credits');
 
             $table->foreign('school_id')->references('school_id')->on('schools');
