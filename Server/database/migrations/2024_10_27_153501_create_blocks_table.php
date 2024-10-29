@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('blocks', function (Blueprint $table) {
-            $table->id();
-            $table->string('block_id')->unique();
+            $table->id("block_id");
             $table->string('block_name')->unique();
             $table->integer('block_number_of_floors');
             $table->timestamps();
