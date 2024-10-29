@@ -15,6 +15,11 @@ class Block extends Model
 
     protected $hidden = [];
 
+    // Uno a Muchos (Una bloque [A1] tiene muchos salones)
+    public function classrooms() {
+        return $this->hasMany(Classroom::class);
+    }
+
     protected function casts(): array
     {
         return [

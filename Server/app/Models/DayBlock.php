@@ -12,6 +12,11 @@ class DayBlock extends Model
         "day_block_number_of_days"
     ];
 
+    // Uno a Muchos (Una [bloque de días] tiene muchas horas)
+    public function timeBlocks() {
+        return $this->hasMany(TimeBlock::class);
+    }
+
     protected function casts()
     {
         return [

@@ -14,6 +14,11 @@ class Teacher extends Model
         "teacher_card_id"
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected function casts()
     {
         return [

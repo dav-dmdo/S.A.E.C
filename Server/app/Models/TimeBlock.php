@@ -15,6 +15,11 @@ class TimeBlock extends Model
 
     protected $hidden = [];
 
+    // Uno a Muchos (Una hora tiene un [bloque de día])
+    public function dayBlock() {
+        return $this->belongsTo(DayBlock::class);
+    }
+
     protected function casts(): array
     {
         return [

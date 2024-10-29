@@ -12,6 +12,11 @@ class Degree extends Model
         "degree_minimun_credits"
     ];
 
+    // Uno a Muchos (Una carrera tiene una escuela)
+    public function school() {
+        return $this->belongsTo(School::class);
+    }
+
     protected function casts()
     {
         return [

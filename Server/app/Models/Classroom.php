@@ -14,6 +14,11 @@ class Classroom extends Model
         "classroom_max_num_of_students"
     ];
 
+    // Uno a Muchos (Un salón tiene "está" una bloque [A1])
+    public function block() {
+        return $this->belongsTo(Block::class);
+    }
+
     protected function casts()
     {
         return [

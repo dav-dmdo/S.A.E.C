@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('degrees_subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('degree_id');
+            $table->unsignedBigInteger('degree_id');
             $table->string('subject_id');
 
             $table->foreign('degree_id')->references('degree_id')->on('degrees');
