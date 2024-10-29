@@ -24,6 +24,7 @@ class Faculty extends Model
         protected function casts(): array
         {
             return [
+                "faculty_id" => "int"
             ];
         }
 }

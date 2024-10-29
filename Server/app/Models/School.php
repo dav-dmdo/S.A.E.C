@@ -24,7 +24,8 @@ class School extends Model
     protected function casts(): array
     {
         return [
-            "faculty_id" => "int"
+            "faculty_id" => "int",
+            "school_id" => "int"
         ];
     }
 }

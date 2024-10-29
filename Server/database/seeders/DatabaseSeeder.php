@@ -18,20 +18,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Con factory
         $this->call([
-            UserSeeder::class
+            UserSeeder::class,
+            FacultySeeder::class,
+            SchoolSeeder::class,
+            DepartmentSeeder::class
         ]);
-
-        // Sin factory
-        $this->structureUniversity();
     }
 
     private function structureUniversity() {
-        $facultad = new Faculty();
-        $facultad->faculty_name = "Facultad de Ingeniería";
-        $facultad->faculty_description = "Facultad de Ingeniería";
-        $facultad->save();
+        
 
         
     }
