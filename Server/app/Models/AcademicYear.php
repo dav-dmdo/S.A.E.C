@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AcademicYear extends Model
 {
 
+    // protected $primaryKey = 'id'; -> no es necesario porque por defecto entiende que la columna id es PK
     use HasFactory;
 
     protected $dateFormat = 'd-m-Y';
