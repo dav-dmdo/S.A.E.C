@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_ci')->references('user_ci')->on('users');
+            $table->primary('user_ci');
         });
     }
 

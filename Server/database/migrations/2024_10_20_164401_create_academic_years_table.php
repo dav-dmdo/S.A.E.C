@@ -13,10 +13,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('academic_years', function (Blueprint $table) {
-            $table->id();
-            $table->integer('academic_year_id')->unique();
+            $table->integer("academic_year_id");                    // 2122, 2223, 2324, 2425, ...
             $table->date('academic_year_start_date')->unique();
             $table->date('academic_year_end_date')->unique();
+            $table->string('description');
+
+            $table->primary("academic_year_id");
+
             $table->timestamps();
         });
     }

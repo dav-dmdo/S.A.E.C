@@ -30,9 +30,7 @@ class AcademicYear extends Model
             'academic_year_id' => 'int',
             'academic_year_start_date' => 'date:d-m-Y',
             'academic_year_end_date' => 'date:d-m-Y',
-            'academic_year_description' => 'string',
-            'created_at' => 'datetime:d-m-Y H:i:s',
-            'updated_at' => 'datetime:d-m-Y H:i:s',
+            'academic_year_description' => 'string'
         ];
     }
 }

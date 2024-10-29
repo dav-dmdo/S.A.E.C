@@ -11,10 +11,8 @@ class Subject extends Model
         "subject_description"
     ];
 
-    // Oculta propiedades cuando se expone el modelo
     protected $hidden = [];
 
-    // Especificas los atributos del modelo
     protected function casts(): array
     {
         return [

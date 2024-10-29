@@ -13,7 +13,6 @@ class Term extends Model
     protected $fillable = [
         'academic_year_id',
         'term_id',
-        'term_name',
         'term_start_date',
         'term_end_date',
         'term_type'
@@ -29,7 +28,6 @@ class Term extends Model
         return [
             'academic_year_id' => 'int',
             'term_id' => 'int',
-            'term_name' => 'string',
             'term_start_date' => 'date:d-m-Y',
             'term_end_date' => 'date:d-m-Y',
             'term_type' => 'string'

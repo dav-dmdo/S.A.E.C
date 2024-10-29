@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('blocks', function (Blueprint $table) {
-            $table->id("block_id");
-            $table->string('block_name')->unique();
+            $table->string("block_id");                     // A1, A2, SL, EMG
+            $table->string('block_name')->unique();         // Módulo de Aulas 1
             $table->integer('block_number_of_floors');
+
+            $table->primary("block_id");
+
             $table->timestamps();
         });
     }

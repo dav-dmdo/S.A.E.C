@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Block extends Model
 {
     protected $fillable = [
+        "block_id",
         "block_name",
+        "block_description",
         "block_number_of_floors"
     ];
 

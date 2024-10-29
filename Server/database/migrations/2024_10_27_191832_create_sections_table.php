@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('subject_id');
-            $table->integer('section_number');
-            $table->integer('academic_year_id');
-            $table->enum('term_id', [1, 2, 3, 4]);
-            $table->integer('teacher_id');
-            $table->integer('day_block_id');
-            $table->integer('time_block_id');
-            $table->string('block_id');
-            $table->integer('classroom_id');
-            $table->text('section_description');
+            $table->unsignedBigInteger('subject_id');       // 1, 2, 3, ..., n
+            $table->integer('section_number');              // 1, 2, 3, ..., n
+            $table->integer('academic_year_id');            // 2223, 2324, 2425, ...
+            $table->enum('term_id', [1, 2, 3, 4]);          // 1, 2, 3, 4
+            $table->integer('teacher_id');                  // 15.987.334
+            $table->string('day_block_id');                 // LUN-MIE
+            $table->integer('time_block_id');               // 1, 2, ..., 7
+            $table->string('block_id');                     // A1, A2, EMG, SL
+            $table->integer('classroom_id');                // 1, 2, 3, 4
+            $table->text('section_description');            
             $table->integer('section_capacity');
             $table->timestamps();
 

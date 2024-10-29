@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classrooms', function (Blueprint $table) {
-            $table->id();
-            $table->string('block_id');
-            $table->integer('classroom_id');
+            $table->string('block_id');                         // A1, A2, EMG, SL
+            $table->integer('classroom_id');                    // 1, 2, 3, ..., n
+
             $table->string('classroom_name')->unique()->nullable();
             $table->string('classroom_description')->nullable();
             $table->integer('classroom_max_num_of_students');
 
             $table->foreign('block_id')->references('block_id')->on('blocks');
-            $table->unique(['block_id', 'classroom_id'], 'unique_classroom_combination');
+            $table->primary(['block_id', 'classroom_id'], 'primary_classroom_combination');
 
             $table->timestamps();
         });
