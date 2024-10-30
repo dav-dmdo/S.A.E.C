@@ -24,6 +24,11 @@ class Term extends Model
         return $this->belongsTo(AcademicYear::class);
     }
 
+    // Uno a muchos (Un trimestre tiene varias secciones)
+    public function sections() {
+        return $this->hasMany(Section::class);
+    }
+
     protected function casts(): array
     {
         return [

@@ -20,6 +20,11 @@ class TimeBlock extends Model
         return $this->belongsTo(DayBlock::class);
     }
 
+    // Uno a muchos (Una hora tiene "es usada por" muchas secciones)
+    public function sections() {
+        return $this->hasMany(Section::class);
+    }
+
     protected function casts(): array
     {
         return [
