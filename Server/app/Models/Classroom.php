@@ -19,6 +19,11 @@ class Classroom extends Model
         return $this->belongsTo(Block::class);
     }
 
+    // Uno a muchos (Un salón tiene "lo usan" muchas secciones)
+    public function sections() {
+        return $this->hasMany(Section::class);
+    }
+
     protected function casts()
     {
         return [
