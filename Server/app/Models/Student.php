@@ -15,9 +15,15 @@ class Student extends Model
         "student_enrollment_date"
     ];
 
+    // Uno a uno (Un estudiante es un user)
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Muchos a muchos (Un estudiante tiene "se registra" en muchas secciones)
+    public function sections() {
+        return $this->belongsToMany(Section::class);
     }
 
     protected function casts()

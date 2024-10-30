@@ -16,7 +16,6 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
-    // Permite la asignación de datos masivo: User::create($request->all())
     protected $fillable = [
         "user_ci",
         "user_first_name",
@@ -31,14 +30,29 @@ class User extends Authenticatable
         "remember_token"
     ];
 
-    // Oculta propiedades cuando se expone el modelo
     protected $hidden = [
         "password",
         "user_birthdate",
         "remember_token",
     ];
 
-    // Especificas los atributos del modelo
+    // Uno a uno (Un usuario es un profesor)
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
+
+    // Uno a uno (Un usuario es un estudiante)
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
+    public function classes() {
+        return $this->belongsToMany(Clase::class);
+    }
+
     protected function casts(): array
     {
         return [

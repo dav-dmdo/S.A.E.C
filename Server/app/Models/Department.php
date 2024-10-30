@@ -9,17 +9,19 @@ class Department extends Model
 {
     use HasFactory;
 
-    // Permite la asignación de datos masivo: Department::create($request->all())
     protected $fillable = [
         "school_id",
         "department_name",
         "department_description"
     ];
 
-    // Oculta propiedades cuando se expone el modelo
     protected $hidden = [];
 
-    // Especificas los atributos del modelo
+    // Uno a Muchos (Un departamento tiene una escuela)
+    public function school() {
+        return $this->belongsTo(School::class);
+    }
+
     protected function casts(): array
     {
         return [

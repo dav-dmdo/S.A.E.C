@@ -16,6 +16,11 @@ class Faculty extends Model
 
     protected $hidden = [];
 
+    // Uno a Muchos (Una facultad tiene muchas escuelas)
+    public function schools() {
+        return $this->hasMany(School::class);
+    }
+
     protected function casts(): array
     {
         return [

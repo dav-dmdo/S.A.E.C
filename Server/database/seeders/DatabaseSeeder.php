@@ -20,15 +20,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+
             FacultySeeder::class,
             SchoolSeeder::class,
-            DepartmentSeeder::class
+            DepartmentSeeder::class,
         ]);
-    }
-
-    private function structureUniversity() {
-        
-
-        
     }
 }

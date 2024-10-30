@@ -20,6 +20,35 @@ class Section extends Model
         "section_capacity",
     ];
 
+    // Uno a muchos (Una sección tiene muchas clases)
+    public function classes() {
+        return $this->hasMany(Clase::class);
+    }
+
+    // Muchos a muchos (Una sección tiene muchos estudiantes)
+    public function students() {
+        return $this->belongsToMany(Student::class);
+    }
+
+    // Uno a muchos (Una seccion tiene un profesor)
+    public function teacher() {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    // Uno a muchos (Una seccion tiene una materia)
+    public function subject() {
+        return $this->belongsTo(Subject::class);
+    }
+
+    // Uno a muchos (Una sección tiene ...)
+    // 
+
+    // Uno a muchos (Una sección tiene ...)
+    // ...
+
+    // Uno a muchos (Una sección tiene ...)
+    // ...
+
     protected function casts()
     {
         return [

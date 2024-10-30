@@ -12,21 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sections', function (Blueprint $table) {
-            $table->id();
-            $table->string('subject_id');
-            $table->integer('section_number');
-            $table->integer('academic_year_id');
-            $table->enum('term_id', [1, 2, 3, 4]);
-            $table->integer('teacher_id');
-            $table->integer('day_block_id');
-            $table->integer('time_block_id');
-            $table->string('block_id');
-            $table->integer('classroom_id');
+            $table->id();                                   // ID MAESTRO
+            $table->string('subject_id');                   // FGEMI01
+            $table->integer('section_number');              // 1, 2, ..., n      
+            $table->integer('academic_year_id');            // 2324, 2425, ...
+            $table->enum('term_id', [1, 2, 3, 4]);          // Tipo de trimestre
+            $table->integer('teacher_id');                  // 12.345.678
+            $table->string('day_block_id');                 // LUN, MAR-JUE, ...
+            $table->integer('time_block_id');               // 1, 2, ..., 7
+            $table->string('block_id');                     // A1, A2, SL, EMG,
+            $table->integer('classroom_id');                // 1, 2, ..., n
             $table->text('section_description');
             $table->integer('section_capacity');
             $table->timestamps();
 
-            $table->foreign('subject_id')->references('subject_id')->on('subject');
+            $table->foreign('subject_id')->references('subject_id')->on('subjects');
             $table->foreign('teacher_id')->references('user_ci')->on('teachers');
             $table->foreign(['academic_year_id', 'term_id'])->references(['academic_year_id', 'term_id'])->on('terms');
             $table->foreign(['day_block_id', 'time_block_id'])->references(['day_block_id', 'time_block_id'])->on('time_blocks');

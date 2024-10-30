@@ -20,6 +20,7 @@ class AcademicYear extends Model
         'academic_year_description'
     ];
 
+    // Uno a Muchos (Un año académico tiene varios trimestres)
     public function terms()
     {
         return $this->hasMany(Term::class);

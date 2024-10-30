@@ -18,6 +18,7 @@ class Term extends Model
         'term_type'
     ];
 
+    // Uno a Muchos (Un trimestre tiene muchos años)
     public function academic_years()
     {
         return $this->belongsTo(AcademicYear::class);
