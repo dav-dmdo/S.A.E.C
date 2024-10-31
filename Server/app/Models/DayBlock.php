@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DayBlock extends Model
 {
     protected $fillable = [
+        "day_block_id",
         "day_block_day_1",
         "day_block_day_2",
         "day_block_number_of_days"
@@ -20,7 +21,7 @@ class DayBlock extends Model
     protected function casts()
     {
         return [
-            "day_block_id" => 'int',
+            "day_block_id" => 'string',
             "day_block_number_of_days" => 'int'
         ];
     }
