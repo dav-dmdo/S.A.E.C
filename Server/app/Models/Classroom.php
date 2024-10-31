@@ -27,7 +27,7 @@ class Classroom extends Model
     protected function casts()
     {
         return [
-            "block_id" => 'int',
+            "block_id" => 'string',
             "classroom_id" => 'int',
             "classroom_max_num_of_students" => 'int'
         ];

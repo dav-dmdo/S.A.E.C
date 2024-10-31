@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DayBlockSeeder::class,
             TimeBlockSeeder::class,
             BlockSeeder::class,
+            ClassroomSeeder::class,
         ]);
     }
 }
