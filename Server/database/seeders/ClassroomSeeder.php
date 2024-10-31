@@ -19,9 +19,6 @@ class ClassroomSeeder extends Seeder
     {
 
         $blocks = Block::all();
-        Log::info($blocks);
-        $block_A1 = Block::where('block_id', 'A1')->first();
-        Log::info($block_A1);
 
         foreach ($blocks as $block) {
             $block_floors = $block->block_number_of_floors;
