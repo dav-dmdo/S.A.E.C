@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
+use App\Models\Block;
 use App\Models\DayBlock;
 use App\Models\Faculty;
 use App\Models\Student;
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             TermSeeder::class,
             DayBlockSeeder::class,
             TimeBlockSeeder::class,
+            BlockSeeder::class,
         ]);
     }
 }
