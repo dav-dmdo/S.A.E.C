@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('department_id');
             $table->unsignedBigInteger('school_id');
             $table->string('department_name')->unique();
-            $table->string('department_description');
+            $table->text('department_description');
             $table->timestamps();
 
             $table->foreign('school_id')->references('school_id')->on('schools');
