@@ -18,7 +18,7 @@ class Subject extends Model
     public function degrees() {
         return $this->belongsToMany(Degree::class);
     }
-    
+
     // Uno a muchos (Una materia tiene varias secciones)
     public function sections(){
         return $this->hasMany(Section::class);
@@ -27,7 +27,9 @@ class Subject extends Model
     protected function casts(): array
     {
         return [
-            "subject_id" => "int"
+            "subject_id" => "int",
+            "subject_name" => "string",
+            "subject_description" => "string"
         ];
     }
 }

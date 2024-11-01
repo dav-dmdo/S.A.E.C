@@ -9,6 +9,8 @@ class Faculty extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = "faculty_id";
+
     protected $fillable = [
         "faculty_name",
         "faculty_description"
@@ -24,7 +26,9 @@ class Faculty extends Model
     protected function casts(): array
     {
         return [
-            "faculty_id" => "int"
+            "faculty_id" => "int",
+            "faculty_name" => "string",
+            "faculty_description" => "string"
         ];
     }
 }

@@ -15,8 +15,31 @@ class SchoolSeeder extends Seeder
     {
         $school = new School();
         $school->faculty_id = 1;
-        $school->school_name = "Escuela de Ingeniería en Ingeniería";
-        $school->school_description = "Escuela de Ingeniería en Sistemas";
+        $school->school_name = "Escuela de Ingeniería Civil y Escuela de Ingeniería Mecánica";
+        $school->school_description = "Escuela de Ingeniería Civil y Escuela de Ingeniería Mecánica
+Sara Melián, directora: smelian@unimet.edu.ve";
+        $school->save();
+
+        $school = new School();
+        $school->faculty_id = 1;
+        $school->school_name = "Escuela de Ingeniería de Producción y Escuela de Ingeniería Química";
+        $school->school_description = "Escuela de Ingeniería de Producción y Escuela de Ingeniería Química
+María Eugenia Álvarez, directora: mealvarez@unimet.edu.ve";
+        $school->save();
+
+        $school = new School();
+        $school->faculty_id = 1;
+        $school->school_name = "Escuela de Ingeniería Eléctrica";
+        $school->school_description = "Escuela de Ingeniería Eléctrica
+Aidaelena Smith, directora: asmith@unimet.edu.ve";
+        $school->save();
+
+        $school = new School();
+        $school->faculty_id = 1;
+        $school->school_name = "Escuela de Ingeniería de Sistemas";
+        $school->school_description = "Escuela de Ingeniería de Sistemas
+Teresa de Abreu, directora: tabreu@unimet.edu.ve
+";
         $school->save();
     }
 }

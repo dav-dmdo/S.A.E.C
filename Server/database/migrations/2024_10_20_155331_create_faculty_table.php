@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('faculties', function (Blueprint $table) {
             $table->id('faculty_id');
             $table->string('faculty_name')->unique();
-            $table->string('faculty_description');
+            $table->text('faculty_description');
             $table->timestamps();
         });
     }

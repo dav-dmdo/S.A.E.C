@@ -7,6 +7,7 @@ use App\Models\Block;
 use App\Models\DayBlock;
 use App\Models\Faculty;
 use App\Models\Student;
+use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Term;
 use App\Models\User;
@@ -32,6 +33,8 @@ class DatabaseSeeder extends Seeder
             TimeBlockSeeder::class,
             BlockSeeder::class,
             ClassroomSeeder::class,
+            DegreeSeeder::class,
+            SubjectSeeder::class,
         ]);
     }
 }
