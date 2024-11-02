@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,6 +8,16 @@ import RegisterScreen from './RegisterScreen';
 import AttendanceView from './Home/AttendanceView';
 import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+=======
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './LoginScreen'; 
+import Home from './Home'; 
+import RegisterScreen from './RegisterScreen';
+import AttendanceView from './Home/AttendanceView'; 
+import { Image, TouchableOpacity, View } from 'react-native';
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
 
 // Definir el tipo RootStackParamList
 export type RootStackParamList = {
@@ -16,6 +27,7 @@ export type RootStackParamList = {
   AttendanceView: undefined;
 };
 
+<<<<<<< HEAD
 // Crear la pila de navegación con el tipo RootStackParamList
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,9 +67,35 @@ const App = () => {
     ),
     headerBackVisible: false, // Desactiva el botón "back" si no se necesita
   });
+=======
+const Stack = createNativeStackNavigator<RootStackParamList>(); // Usar los tipos definidos
 
+const commonHeaderOptions = (navigation: any, title: string) => ({
+  title,
+  headerLeft: () => (
+    <Image
+      source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
+      style={{ width: 100, height: 40, resizeMode: 'contain', marginLeft: 10 }}
+    />
+  ),
+  headerRight: () => (
+    <TouchableOpacity style={{ padding: 10 }} onPress={() => console.log('Menu opened')}>
+      <View style={{ width: 25, height: 3, backgroundColor: '#000', marginBottom: 4 }} />
+      <View style={{ width: 25, height: 3, backgroundColor: '#000', marginBottom: 4 }} />
+      <View style={{ width: 25, height: 3, backgroundColor: '#000' }} />
+    </TouchableOpacity>
+  ),
+  headerBackVisible: false, // Desactiva el botón "back" si no se necesita
+});
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
+
+const App = () => {
   return (
+<<<<<<< HEAD
     <NavigationContainer ref={navigationRef}>
+=======
+    <NavigationContainer>
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen 
           name="Login" 
@@ -67,16 +105,25 @@ const App = () => {
         <Stack.Screen 
           name="Home" 
           component={Home} 
+<<<<<<< HEAD
           options={commonHeaderOptions('Inicio')} // Opciones de header para Home
+=======
+          options={({ navigation }) => commonHeaderOptions(navigation, 'Inicio')} // Usar la función para Home
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
         />
         <Stack.Screen 
           name="Register" 
           component={RegisterScreen} 
+<<<<<<< HEAD
           options={{ headerShown: false }} // Ocultar el header en RegisterScreen
+=======
+          options={{ headerShown: false }} // Ocultar la barra en RegisterScreen
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
         />
         <Stack.Screen 
           name="AttendanceView" 
           component={AttendanceView} 
+<<<<<<< HEAD
           options={commonHeaderOptions('Asistencias')} // Opciones de header para AttendanceView
         />
       </Stack.Navigator>
@@ -103,10 +150,16 @@ const App = () => {
           </View>
         </View>
       </Modal>
+=======
+          options={({ navigation }) => commonHeaderOptions(navigation, 'Asistencias')} // Usar la función para AttendanceView
+        />
+      </Stack.Navigator>
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
     </NavigationContainer>
   );
 };
 
+<<<<<<< HEAD
 export default App;
 
 // Estilos
@@ -145,3 +198,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+=======
+export default App;
+>>>>>>> 9ce21f812a1db79f9f6af4693e4e56a3b8a90c87
