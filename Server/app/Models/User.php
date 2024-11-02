@@ -15,6 +15,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+    protected $dateFormat = 'd-m-Y';
 
     protected $fillable = [
         "user_ci",
@@ -57,7 +58,9 @@ class User extends Authenticatable
     {
         return [
             "user_id" => 'int',
-            "created_at" => 'timestamp'
+            "created_at" => 'timestamp',
+            "user_birthdate" => 'date:d-m-Y',
+            
         ];
     }
 }

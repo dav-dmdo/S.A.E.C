@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id("user_id");
             $table->integer("user_ci")->unique();
             $table->string('user_first_name');
-            $table->string('user_middle_name');
+            $table->string('user_middle_name')->nullable();
             $table->string('user_first_surname');
-            $table->string('user_second_surname');
+            $table->string('user_second_surname')->nullable();
             $table->string('user_email')->unique();
-            $table->string('user_birthdate');
+            $table->date('user_birthdate');
             $table->string('user_gender');
             $table->string('username')->unique();
             $table->string('password');
