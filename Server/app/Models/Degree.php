@@ -29,6 +29,7 @@ class Degree extends Model
             "degree_id" => 'int',
             "school_id" => 'int',
             "degree_minimun_credits" => 'int',
+            "degree_name" => 'string'
         ];
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('subject_id')->unique();         // FGEMI03
             $table->string('subject_name')->unique();       // Matemática III
-            $table->string('subject_description');
+            $table->string('subject_description')->nullable();
             $table->timestamps();
         });
     }

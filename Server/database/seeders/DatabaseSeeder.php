@@ -7,6 +7,7 @@ use App\Models\Block;
 use App\Models\DayBlock;
 use App\Models\Faculty;
 use App\Models\Student;
+use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Term;
 use App\Models\User;
@@ -23,6 +24,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            TeacherSeeder::class,
+            StudentSeeder::class,
             FacultySeeder::class,
             SchoolSeeder::class,
             DepartmentSeeder::class,
@@ -32,6 +35,9 @@ class DatabaseSeeder extends Seeder
             TimeBlockSeeder::class,
             BlockSeeder::class,
             ClassroomSeeder::class,
+            DegreeSeeder::class,
+            SubjectSeeder::class,
+            SectionSeeder::class,
         ]);
     }
 }

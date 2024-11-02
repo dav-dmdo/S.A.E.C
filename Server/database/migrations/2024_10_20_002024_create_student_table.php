@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->integer('user_ci');
-            $table->string('student_card_id')->unique();
-            $table->timestamp('student_enrollment_date');
+            $table->integer('student_card_id')->unique();
+            $table->date('student_enrollment_date');
             $table->timestamps();
 
             $table->foreign('user_ci')->references('user_ci')->on('users');

@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = "user_ci";
+    
     protected $fillable = [
         "user_ci",
         "student_card_id",

@@ -9,6 +9,8 @@ class School extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = "school_id";
+
     protected $fillable = [
         "faculty_id",
         "school_name",
@@ -36,6 +38,9 @@ class School extends Model
     {
         return [
             "faculty_id" => "int",
+            "school_id" => "int",
+            "school_name" => "string",
+            "school_description" => "string"
         ];
     }
 }

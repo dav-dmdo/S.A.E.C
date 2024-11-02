@@ -42,44 +42,24 @@ class Section extends Model
 
     // Uno a muchos (Una sección tiene un trimestre)
     public function term() {
-        // Referencia a enum('term_id', [1, 2, 3, 4])
-        return $this->belongsTo(Term::class, "term_id");
-    }
-
-    // Uno a muchos (Una sección tiene un año académico)
-    public function academicYear() {
-        // Referencia a integer('academic_year_id')
-        return $this->belongsTo(Term::class, "academic_year_id");
+        return $this->belongsTo(Term::class, ['academic_year_id', 'term_id']);
     }
 
     // Uno a muchos (Una sección tiene un bloque de tiempo)
-    public function timeBlock() {
-        // Referencia a integer('time_block_id')
-        return $this->belongsTo(TimeBlock::class, "time_block_id");
+    public function timeBlock()
+    {
+        return $this->belongsTo(TimeBlock::class, ['day_block_id', 'time_block_id']);
     }
-
-    // Uno a muchos (Una sección tiene un bloque de días)
-    public function dayBlock() {
-        // Referencia a string('day_block_id')
-        return $this->belongsTo(TimeBlock::class, "day_block_id");
-    }
-
     // Uno a muchos (Una sección tiene salón)
-    public function classroom() {
-        // Referencia a integer('classroom_id')
-        return $this->belongsTo(Classroom::class, "classroom_id");
-    }
-
-    // Uno a muchos (Una sección tiene ...)
-    public function block() {
-        // Referencia a string('block_id')
-        return $this->belongsTo(Classroom::class, "block_id");
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class, ['block_id', 'classroom_id']);
     }
 
     protected function casts()
     {
         return [
-            "subject_id" => "int",
+            "subject_id" => "string",
             "section_number" => "int",
             "academic_year_id" => "int",
             "term_id" => "int",
@@ -87,6 +67,8 @@ class Section extends Model
             "time_block_id" => "int",
             "classroom_id" => "int",
             "section_capacity" => "int",
+            "section_description" => "string",
+            "day_block_id" => "string",
         ];
     }
 }

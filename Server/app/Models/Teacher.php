@@ -9,9 +9,12 @@ class Teacher extends Model
 {
     use HasFactory;
 
+    protected $dateFormat = 'Y-m-d';
+
     protected $fillable = [
         "user_ci",
-        "teacher_card_id"
+        "teacher_card_id",
+        "teacher_hire_date"
     ];
 
     // Uno a uno (Un profesor es un user)
@@ -29,7 +32,8 @@ class Teacher extends Model
     {
         return [
             'user_ci' => 'int',
-            'teacher_card_id' => 'int'
+            'teacher_card_id' => 'int',
+            'teacher_hire_date' => 'date:Y-m-d'
         ];
     }
 }

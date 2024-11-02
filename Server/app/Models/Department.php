@@ -26,7 +26,9 @@ class Department extends Model
     {
         return [
             "school_id" => "int",
-            "department_id" => "int"
+            "department_id" => "int",
+            "department_name" => "string",
+            "department_description" => "string"
         ];
     }
 }
