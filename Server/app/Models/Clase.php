@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Clase extends Model
 {
+    protected $table = "classes";
+
+    protected $dateFormat = 'Y-m-d';
+
     protected $fillable = [
         "section_id",
         "class_number",
@@ -19,7 +23,7 @@ class Clase extends Model
 
     // Uno a muchos (Una clase tiene una sección)
     public function section() {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 
     // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)

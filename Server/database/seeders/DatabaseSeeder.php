@@ -38,6 +38,8 @@ class DatabaseSeeder extends Seeder
             DegreeSeeder::class,
             SubjectSeeder::class,
             SectionSeeder::class,
+            SectionStudentSeeder::class,
+            ClaseSeeder::class,
         ]);
     }
 }

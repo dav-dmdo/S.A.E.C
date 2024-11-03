@@ -27,7 +27,10 @@ class Section extends Model
 
     // Muchos a muchos (Una sección tiene muchos estudiantes)
     public function students() {
-        return $this->belongsToMany(Student::class);
+        return $this->belongsToMany(Student::class, 'sections_students', 'section_id', 'student_id')
+            ->using(SectionStudent::class)
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     // Uno a muchos (Una seccion tiene un profesor)
@@ -42,7 +45,12 @@ class Section extends Model
 
     // Uno a muchos (Una sección tiene un trimestre)
     public function term() {
-        return $this->belongsTo(Term::class, ['academic_year_id', 'term_id']);
+        return $this->belongsTo(Term::class, 'term_id', 'term_id');
+    }
+
+    // Uno a muchos (Una sección tiene un año académico)
+    public function academicYear() {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
     }
 
     // Uno a muchos (Una sección tiene un bloque de tiempo)
@@ -55,7 +63,6 @@ class Section extends Model
     {
         return $this->belongsTo(Classroom::class, ['block_id', 'classroom_id']);
     }
-
     protected function casts()
     {
         return [
