@@ -13,7 +13,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer',
+            'user_ci' => 'required|integer',
             'user_first_name' => 'required|string|max:255|regex:/^\S+$/',
             'user_middle_name' => 'string|max:255|regex:/^\S+$/',
             'user_first_surname' => 'required|string|max:255|regex:/^\S+$/',
@@ -25,7 +25,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $exists = User::where('user_id', $request->user_id)
+
+        $exists = User::where('user_ci', $request->user_ci)
             ->orWhere('user_email', $request->user_email)
             ->exists();
 
@@ -38,7 +39,7 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'user_id' => $request->user_id,
+            'user_ci' => $request->user_ci,
             'user_first_name' => $request->user_first_name,
             'user_middle_name' => $request->user_middle_name,
             'user_first_surname' => $request->user_first_surname,
@@ -83,6 +84,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'user' => $user,
         ], 200);
     }
 

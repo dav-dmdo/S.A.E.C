@@ -15,7 +15,10 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
     protected $dateFormat = 'd-m-Y';
+
+    protected $primaryKey = 'user_id';
 
     protected $fillable = [
         "user_ci",
@@ -33,7 +36,6 @@ class User extends Authenticatable
 
     protected $hidden = [
         "password",
-        "user_birthdate",
         "remember_token",
     ];
 
@@ -65,9 +67,9 @@ class User extends Authenticatable
     {
         return [
             "user_id" => 'int',
+            "user_ci" => 'int',
             "created_at" => 'timestamp',
             "user_birthdate" => 'date:d-m-Y',
-
         ];
     }
 }
