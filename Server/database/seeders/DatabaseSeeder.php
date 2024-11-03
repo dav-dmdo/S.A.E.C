@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             SectionSeeder::class,
             SectionStudentSeeder::class,
+            ClaseSeeder::class,
         ]);
     }
 }

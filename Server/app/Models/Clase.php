@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Clase extends Model
 {
+    protected $table = "classes";
+    
+    protected $dateFormat = 'Y-m-d';
+
     protected $fillable = [
         "section_id",
         "class_number",
