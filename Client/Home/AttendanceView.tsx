@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App'; // Ajusta la ruta si es necesario
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceView'>;
 
 const AttendanceRecord = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -9,6 +13,8 @@ const AttendanceRecord = () => {
   const [section, setSection] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [rating, setRating] = useState<number>(3);
+
+  const navigation = useNavigation<NavigationProp>();
 
   const subjects = [
     { day: "Mie.", subject: "Matemática III" },
@@ -39,13 +45,15 @@ const AttendanceRecord = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Sección de título */}
+      {/* Header */}
       <View style={styles.header}>
-        <Icon name="check-circle" size={30} color="#fff" />
-        <Text style={styles.headerTitle}>Registro de asistencias</Text>
-        <Text style={styles.headerSubtitle}>
-          El registro está organizado para que se presente la última clase a la que asistió.
-        </Text>
+        <Image source={require('../assets/carpeta.png')} style={[styles.headerIcon, { tintColor: '#FFFFFF' }]} />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>Registro de asistencias</Text>
+          <Text style={styles.headerSubtitle}>
+            El registro está organizado para que se presente la última clase a la que asistió.
+          </Text>
+        </View>
       </View>
 
       {/* Tabla de registros */}
@@ -59,11 +67,13 @@ const AttendanceRecord = () => {
         {/* Filas de datos */}
         {subjects.map((item, index) => (
           <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.day}</Text>
-            <Text style={styles.tableCell}>{item.subject}</Text>
-            <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
-              <Icon name="visibility" size={20} color="#000" />
-            </TouchableOpacity>
+            <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.day}</Text></View>
+            <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.subject}</Text></View>
+            <View style={styles.centeredCell}>
+              <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
+                <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </View>
@@ -79,12 +89,12 @@ const AttendanceRecord = () => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerLink}>Inicio</Text>
-        <Text style={styles.footerLink}>Asistencias</Text>
-        <Text style={styles.footerLink}>Perfil</Text>
-        <Text style={styles.footerLink}>Profesores</Text>
-        <Text style={styles.footerLink}>FAQs</Text>
-        <Text style={styles.footerLink}>Developers</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.footerLink}>Inicio</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+          <Text style={styles.footerLink}>Asistencias</Text>
+        </TouchableOpacity>
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
 
@@ -121,10 +131,12 @@ const AttendanceRecord = () => {
               <View style={styles.ratingContainer}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                    <Icon
-                      name="star"
-                      size={24}
-                      color={star <= rating ? "#f4a261" : "#ccc"}
+                    <Image
+                      source={require('../assets/estrella.png')}
+                      style={[
+                        styles.starIcon,
+                        { tintColor: star <= rating ? '#f4a261' : '#ccc' }
+                      ]}
                     />
                   </TouchableOpacity>
                 ))}
@@ -137,7 +149,6 @@ const AttendanceRecord = () => {
                 style={styles.textInput}
                 multiline
                 placeholder="Escribe tu comentario..."
-                defaultValue="Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat."
               />
             </View>
 
@@ -161,54 +172,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#ffffff',
-    paddingTop: 60,
-    paddingBottom: 10,
-
-  },
-  logo: {
-    width: 150,
-    height: 50,
-    resizeMode: 'contain',
-  },
-  menuButton: {
-    padding: 10,
-  },
-  menuBar: {
-    width: 25,
-    height: 3,
-    backgroundColor: '#000',
-    marginVertical: 2,
-  },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#3343a1',
     padding: 15,
-    alignItems: 'center',
+  },
+  headerIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  headerTextContainer: {
+    flex: 1,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
-    marginTop: 10,
   },
   headerSubtitle: {
     fontSize: 14,
     color: '#f0f0f0',
-    textAlign: 'center',
     marginTop: 5,
   },
   tableContainer: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingVertical: 10,
     backgroundColor: '#f1f1f1',
     borderTopWidth: 1,
@@ -223,16 +217,27 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: '#f8f8f8',
+    marginVertical: 2,
+    borderRadius: 5,
+  },
+  centeredCell: {
+    width: '30%',
+    alignItems: 'center',
   },
   tableCell: {
     fontSize: 14,
-    width: '30%',
     textAlign: 'center',
+  },
+  infoIcon: {
+    width: 20,
+    height: 20,
+    tintColor: '#333',
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -263,6 +268,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     marginTop: 10,
+    textAlign: 'center',
   },
   modalBackground: {
     flex: 1,
@@ -298,6 +304,11 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     marginTop: 5,
+  },
+  starIcon: {
+    width: 24,
+    height: 24,
+    marginHorizontal: 2,
   },
   textInput: {
     borderColor: '#ccc',
