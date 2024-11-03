@@ -21,12 +21,12 @@ class Term extends Model
     // Uno a Muchos (Un trimestre tiene muchos años)
     public function academicYear()
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
     }
 
     // Uno a muchos (Un trimestre tiene varias secciones)
     public function sections() {
-        return $this->hasMany(Section::class);
+        return $this->hasMany(Section::class, 'term_id', 'term_id');
     }
 
     protected function casts(): array

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\UserController;
 use App\Models\AcademicYear;
+use App\Models\Clase;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\User;
@@ -73,4 +74,27 @@ Route::get('/section/{id}/student/{ci}', function ($id, $ci) {
         'student' => $student
     ]);
 
+});
+
+Route::get('/classes-year', function () {
+
+    $classes = Clase::all();
+    // $year = $classes[0]->section->term->academicYear;
+    $year = $classes[0]->section->academicYear; // funciona de las dos formas
+    return response()->json([
+        'message' => 'Hello World!',
+        'classes' => $year
+    ]);
+});
+
+Route::get('/year-sections', function () {
+
+    $academicYear = AcademicYear::find(3);
+    $terms = $academicYear->terms;
+    $sections = $terms[2]->sections;
+
+    return response()->json([
+        'message' => 'Hello World!',
+        'classes' => $sections
+    ]);
 });
