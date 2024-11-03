@@ -98,3 +98,24 @@ Route::get('/year-sections', function () {
         'classes' => $sections
     ]);
 });
+
+Route::get('/teachers-students', function () {
+
+    $users = User::all();
+    $teachers = collect();
+    $students = collect();
+
+    foreach ($users as $user) {
+        if ($user->student) {
+            $students->push($user->student);
+        }
+        if ($user->teacher){
+            $teachers->push($user->teacher);
+        }
+    }
+    return response()->json([
+        'message' => 'Hello World!',
+        'teachers' => $user,
+        'students' => $students
+    ]);
+});
