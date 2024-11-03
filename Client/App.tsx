@@ -1,174 +1,147 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './LoginScreen';
+import Home from './Home';
+import RegisterScreen from './RegisterScreen';
+import AttendanceView from './Home/AttendanceView';
+import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
-// Pantalla principal del registro
-const RegisterScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+// Definir el tipo RootStackParamList
+export type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  Register: undefined;
+  AttendanceView: undefined;
+};
 
-  const handleRegister = () => {
-    console.log("Registro iniciado con:", email, password, rememberMe);
-  };
+// Crear la pila de navegación con el tipo RootStackParamList
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-  const toggleRememberMe = () => {
-    setRememberMe(!rememberMe);
-  };
+// Crear y tipar el objeto navigationRef
+import { createNavigationContainerRef } from '@react-navigation/native';
+export const navigationRef = createNavigationContainerRef<RootStackParamList>();
+
+// Tipado para el botón de menú
+interface MenuButtonProps {
+  onPress: () => void;
+}
+
+// Componente para el botón de menú
+const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
+  <TouchableOpacity style={{ padding: 10 }} onPress={onPress}>
+    <View style={styles.menuBar} />
+    <View style={styles.menuBar} />
+    <View style={styles.menuBar} />
+  </TouchableOpacity>
+);
+
+const App = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  // Función para opciones de encabezado comunes
+  const commonHeaderOptions = (title: string): NativeStackNavigationOptions => ({
+    title,
+    headerTitleAlign: 'center', // Centrar el título
+    headerLeft: () => (
+      <Image
+        source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
+        style={{ width: 100, height: 40, resizeMode: 'contain', marginLeft: 10 }}
+      />
+    ),
+    headerRight: () => (
+      <MenuButton onPress={() => setMenuVisible(true)} />
+    ),
+    headerBackVisible: false, // Desactiva el botón "back" si no se necesita
+  });
 
   return (
-    <View style={styles.container}>
-      <Image 
-        style={styles.logo}
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s' }}
-      />
-
-      <Text style={styles.title}>SISTEMA DE ASISTENCIA Y EVALUACIÓN CONTINUA</Text>
-      <Text style={styles.subtitle}>ENTRA AL S.A.E.C. CON TU CORREO DE LA UNIVERSIDAD</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <View style={styles.rememberContainer}>
-        <TouchableOpacity onPress={toggleRememberMe} style={styles.rememberButton}>
-          <View style={styles.checkBox}>
-            {rememberMe && <View style={styles.checked} />}
-          </View>
-          <Text style={styles.rememberText}>Acuérdame</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.googleButton}>
-        <Image 
-          style={styles.googleIcon}
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png' }}
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ headerShown: false }} // Ocultar el header en la pantalla de login
         />
-        <Text style={styles.googleButtonText}>Iniciar sesión con Google</Text>
-      </TouchableOpacity>
+        <Stack.Screen 
+          name="Home" 
+          component={Home} 
+          options={commonHeaderOptions('Inicio')} // Opciones de header para Home
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen} 
+          options={{ headerShown: false }} // Ocultar el header en RegisterScreen
+        />
+        <Stack.Screen 
+          name="AttendanceView" 
+          component={AttendanceView} 
+          options={commonHeaderOptions('Asistencias')} // Opciones de header para AttendanceView
+        />
+      </Stack.Navigator>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
-        <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity>
-        <Text style={styles.registerText}>Regístrate aquí</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Modal de menú de navegación */}
+      <Modal
+        visible={menuVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.menuTitle}>Menú de Navegación</Text>
+            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('Home'); }}>
+              <Text style={styles.menuOption}>Inicio</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('AttendanceView'); }}>
+              <Text style={styles.menuOption}>Asistencias</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setMenuVisible(false)}>
+              <Text style={styles.menuClose}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </NavigationContainer>
   );
 };
 
-// Estilos de la pantalla
+export default App;
+
+// Estilos
 const styles = StyleSheet.create({
-  container: {
+  menuBar: {
+    width: 25,
+    height: 3,
+    backgroundColor: '#000',
+    marginVertical: 2,
+  },
+  modalBackground: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
     padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    borderRadius: 10,
+    alignItems: 'center',
   },
-  logo: {
-    width: 150,
-    height: 50,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
+  menuTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#FF6600',
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  rememberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  rememberButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkBox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  checked: {
-    width: 12,
-    height: 12,
-    backgroundColor: '#FF6600',
-  },
-  rememberText: {
+  menuOption: {
     fontSize: 16,
+    paddingVertical: 10,
   },
-  forgotPassword: {
-    color: '#FF6600',
-  },
-  googleButton: {
-    flexDirection: 'row',
-    backgroundColor: '#4285F4',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  loginButton: {
-    backgroundColor: '#FF6600',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  registerText: {
-    textAlign: 'center',
-    color: '#0000FF',
+  menuClose: {
+    fontSize: 16,
+    color: 'red',
+    marginTop: 20,
   },
 });
-
-export default RegisterScreen;

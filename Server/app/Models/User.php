@@ -6,43 +6,61 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
+/**
+ *
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
+    protected $dateFormat = 'd-m-Y';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        "user_ci",
+        "user_first_name",
+        "user_middle_name",
+        "user_first_surname",
+        "user_second_surname",
+        "user_email",
+        "user_birthdate",
+        "user_gender",
+        "username",
+        "password",
+        "remember_token"
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        "password",
+        "user_birthdate",
+        "remember_token",
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Uno a uno (Un usuario es un profesor)
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
+
+    // Uno a uno (Un usuario es un estudiante)
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
+    public function classes() {
+        return $this->belongsToMany(Clase::class);
+    }
+
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            "user_id" => 'int',
+            "created_at" => 'timestamp',
+            "user_birthdate" => 'date:d-m-Y',
+            
         ];
     }
 }
