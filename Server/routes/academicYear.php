@@ -10,5 +10,3 @@ Route::get('/academic-year/{id}', [AcademicYearController::class, 'show']);
 Route::post('/academic-year', [AcademicYearController::class, 'store']);
 Route::put('/academic-year/{id}', [AcademicYearController::class, 'update']);
 Route::delete('/academic-year/{id}', [AcademicYearController::class, 'destroy']);
-
-

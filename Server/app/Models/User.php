@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,7 +52,8 @@ class User extends Authenticatable
     }
 
     // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
-    public function classes() {
+    public function classes()
+    {
         return $this->belongsToMany(Clase::class);
     }
 
@@ -60,7 +63,7 @@ class User extends Authenticatable
             "user_id" => 'int',
             "created_at" => 'timestamp',
             "user_birthdate" => 'date:d-m-Y',
-            
+
         ];
     }
 }
