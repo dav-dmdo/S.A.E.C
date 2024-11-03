@@ -45,7 +45,7 @@ class Section extends Model
 
     // Uno a muchos (Una sección tiene un trimestre)
     public function term() {
-        return $this->belongsTo(Term::class, ['academic_year_id', 'term_id']);
+        return $this->belongsTo(Term::class, 'term_id');
     }
 
     // Uno a muchos (Una sección tiene un bloque de tiempo)
