@@ -16,8 +16,8 @@ return new class extends Migration
 
             $table->unsignedBigInteger('section_id');
             $table->integer('student_id');
-            
-            $table->enum('status', ['Approved', 'Failed', 'Canceled']);
+
+            $table->enum('status', ['Approved', 'Failed', 'Canceled', 'In Progress'])->default('In Progress');
             $table->timestamps();
 
             $table->foreign('section_id')->references('id')->on('sections');

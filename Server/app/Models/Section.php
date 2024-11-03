@@ -27,7 +27,10 @@ class Section extends Model
 
     // Muchos a muchos (Una sección tiene muchos estudiantes)
     public function students() {
-        return $this->belongsToMany(Student::class);
+        return $this->belongsToMany(Student::class, 'sections_students', 'section_id', 'student_id')
+            ->using(SectionStudent::class)
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     // Uno a muchos (Una seccion tiene un profesor)
@@ -55,7 +58,6 @@ class Section extends Model
     {
         return $this->belongsTo(Classroom::class, ['block_id', 'classroom_id']);
     }
-
     protected function casts()
     {
         return [

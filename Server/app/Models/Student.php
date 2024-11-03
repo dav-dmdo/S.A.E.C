@@ -9,7 +9,7 @@ class Student extends Model
 {
     use HasFactory;
     protected $primaryKey = "user_ci";
-    
+
     protected $fillable = [
         "user_ci",
         "student_card_id",
@@ -24,7 +24,11 @@ class Student extends Model
 
     // Muchos a muchos (Un estudiante tiene "se registra" en muchas secciones)
     public function sections() {
-        return $this->belongsToMany(Section::class);
+        return $this->belongsToMany(Section::class, 'sections_students', 'student_id', 'section_id')
+            ->using(SectionStudent::class)
+            ->withPivot('status')
+            ->withTimestamps();
+
     }
 
     protected function casts()

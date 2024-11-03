@@ -45,6 +45,54 @@ class UserSeeder extends Seeder
             "username" => 'admin',
             "password" => Hash::make('david123'),
         ]);
+        User::create([
+            "user_ci" => 27790027,
+            "user_first_name" => 'Juan',
+            "user_middle_name" => 'Juan',
+            "user_first_surname" => 'Liporaci',
+            "user_second_surname" => 'Liporaci',
+            "user_email" => 'juan.liporaci@correo.unimet.edu.ve',
+            "user_birthdate" => Carbon::create(1999, 11, 17)->format('d-m-y'),
+            "user_gender" => 'Male',
+            "username" => 'Liporaci',
+            "password" => Hash::make('liporaci123'),
+        ]);
+        User::create([
+            "user_ci" => 30085424,
+            "user_first_name" => 'Daniel',
+            "user_middle_name" => 'Daniel',
+            "user_first_surname" => 'De Oliveira',
+            "user_second_surname" => 'De Oliveira',
+            "user_email" => 'daniel.deoliveira@correo.unimet.edu.ve',
+            "user_birthdate" => Carbon::create(1999, 11, 17)->format('d-m-y'),
+            "user_gender" => 'Male',
+            "username" => 'De Oliveira',
+            "password" => Hash::make('deoliveira123'),
+        ]);
+        User::create([
+            "user_ci" => 29887224 ,
+            "user_first_name" => 'Jonathan',
+            "user_middle_name" => 'Jonathan',
+            "user_first_surname" => 'Pizzurro',
+            "user_second_surname" => 'Pizzurro',
+            "user_email" => 'jonathan.pizzurro@correo.unimet.edu.ve',
+            "user_birthdate" => Carbon::create(1999, 11, 17)->format('d-m-y'),
+            "user_gender" => 'Male',
+            "username" => 'Pizzurro',
+            "password" => Hash::make('pizzurro123'),
+        ]);
+        User::create([
+            "user_ci" => 29945196,
+            "user_first_name" => 'Pedro',
+            "user_middle_name" => 'Pedro',
+            "user_first_surname" => 'Gonzalez',
+            "user_second_surname" => 'Gonzalez',
+            "user_email" => 'gonzalez.pedro@correo.unimet.edu.ve',
+            "user_birthdate" => Carbon::create(1999, 11, 17)->format('d-m-y'),
+            "user_gender" => 'Male',
+            "username" => 'Gonzalez',
+            "password" => Hash::make('gonzalez123'),
+        ]);
 
         User::create([
             "user_ci" => 123,
