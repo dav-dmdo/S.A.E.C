@@ -22,7 +22,7 @@ class Section extends Model
 
     // Uno a muchos (Una sección tiene muchas clases)
     public function classes() {
-        return $this->hasMany(Clase::class);
+        return $this->hasMany(Clase::class, 'section_id', 'id');
     }
 
     // Muchos a muchos (Una sección tiene muchos estudiantes)
