@@ -80,7 +80,6 @@ Route::get('/classes-year', function () {
 
     $classes = Clase::all();
     $year = $classes[0]->section->term->academicYear; // <-- USAR ESTA PARA EXTRAER LAS CLASES
-    // $year = $classes[0]->section->academicYear; // funciona de las dos formas
     return response()->json([
         'message' => 'Hello World!',
         'classes' => $year
