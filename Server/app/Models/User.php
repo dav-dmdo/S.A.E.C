@@ -40,25 +40,18 @@ class User extends Authenticatable
     // Uno a uno (Un usuario es un profesor)
     public function teacher()
     {
-        return $this->hasOne(Teacher::class, 'user_ci', 'user_ci');
+        return $this->hasOne(Teacher::class);
     }
 
     // Uno a uno (Un usuario es un estudiante)
     public function student()
     {
-        return $this->hasOne(Student::class, 'user_ci', 'user_ci');
+        return $this->hasOne(Student::class);
     }
 
     // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
     public function classes() {
-        return $this->belongsToMany(Clase::class, 'classes_users', 'user_id', 'class_id')
-        ->using(ClaseUser::class)
-        ->withPivot([
-            'attendance_arrival',
-            'attendance_departure',
-            'attendance_rating'
-        ])
-        ->withTimestamps();
+        return $this->belongsToMany(Clase::class);
     }
 
     protected function casts(): array
@@ -67,7 +60,7 @@ class User extends Authenticatable
             "user_id" => 'int',
             "created_at" => 'timestamp',
             "user_birthdate" => 'date:d-m-Y',
-
+            
         ];
     }
 }

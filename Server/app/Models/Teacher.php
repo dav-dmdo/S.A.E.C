@@ -20,12 +20,12 @@ class Teacher extends Model
     // Uno a uno (Un profesor es un user)
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_ci', 'user_ci');
+        return $this->belongsTo(User::class);
     }
 
     // Uno a muchos (Un profesor tiene muchas secciones)
     public function sections() {
-        return $this->hasMany(Section::class, 'teacher_id', 'user_ci');
+        return $this->hasMany(Section::class);
     }
 
     protected function casts()

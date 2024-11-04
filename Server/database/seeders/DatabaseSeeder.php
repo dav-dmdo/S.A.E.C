@@ -40,7 +40,6 @@ class DatabaseSeeder extends Seeder
             SectionSeeder::class,
             SectionStudentSeeder::class,
             ClaseSeeder::class,
-            ClaseUserSeeder::class,
         ]);
     }
 }

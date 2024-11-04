@@ -28,15 +28,7 @@ class Clase extends Model
 
     // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
     public function users() {
-        return $this->belongsToMany(User::class, 'classes_users', 'class_id', 'user_id')
-        ->using(ClaseUser::class)
-        ->withPivot([
-            'attendance_arrival',
-            'attendance_departure',
-            'attendance_rating'
-        ])
-        ->withTimestamps();
-
+        return $this->belongsToMany(User::class);
     }
 
     protected function casts(): array
