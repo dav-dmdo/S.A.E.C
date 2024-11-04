@@ -39,6 +39,7 @@ class UserController extends Controller
         return $user;
     }
 
+    // NOTE: Usar AuthController para registrar usuarios
     public function store(Request $request)
     {
         try {
@@ -48,7 +49,7 @@ class UserController extends Controller
             $user = User::create($data);
             return response()->json($user, 201);
         } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+            return response()->json(['error' => $th->getMessage()], 400);
         }
     }
 
