@@ -19,7 +19,7 @@ class Student extends Model
     // Uno a uno (Un estudiante es un user)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_ci', 'user_ci');
     }
 
     // Muchos a muchos (Un estudiante tiene "se registra" en muchas secciones)
