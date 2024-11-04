@@ -17,7 +17,10 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
     protected $dateFormat = 'd-m-Y';
+
+    protected $primaryKey = 'user_id';
 
     protected $fillable = [
         "user_ci",
@@ -35,35 +38,40 @@ class User extends Authenticatable
 
     protected $hidden = [
         "password",
-        "user_birthdate",
         "remember_token",
     ];
 
     // Uno a uno (Un usuario es un profesor)
     public function teacher()
     {
-        return $this->hasOne(Teacher::class);
+        return $this->hasOne(Teacher::class, 'user_ci', 'user_ci');
     }
 
     // Uno a uno (Un usuario es un estudiante)
     public function student()
     {
-        return $this->hasOne(Student::class);
+        return $this->hasOne(Student::class, 'user_ci', 'user_ci');
     }
 
     // Muchos a muchos (Un estudiante tiene "entra" a muchas clases)
-    public function classes()
-    {
-        return $this->belongsToMany(Clase::class);
+    public function classes() {
+        return $this->belongsToMany(Clase::class, 'classes_users', 'user_id', 'class_id')
+        ->using(ClaseUser::class)
+        ->withPivot([
+            'attendance_arrival',
+            'attendance_departure',
+            'attendance_rating'
+        ])
+        ->withTimestamps();
     }
 
     protected function casts(): array
     {
         return [
             "user_id" => 'int',
+            "user_ci" => 'int',
             "created_at" => 'timestamp',
             "user_birthdate" => 'date:d-m-Y',
-
         ];
     }
 }

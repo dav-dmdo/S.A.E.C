@@ -19,8 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::prefix('api/v1/test')
                 ->group(base_path('routes/test.php'));
         }
-    )
-    ->withMiddleware(function (Middleware $middleware) {})
+    )   
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            '/api/*',
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        
     })->create();
