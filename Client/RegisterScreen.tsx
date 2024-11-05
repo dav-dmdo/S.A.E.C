@@ -125,7 +125,7 @@ const RegisterScreen = () => {
 
         console.log("Enviando datos:", trimmedData);
 
-        const response = await axios.post('http://127.0.0.1:8000/api/user', trimmedData);
+        const response = await axios.post('http://18.209.15.163:8000/api/user', trimmedData);
 
         if (response.status === 200) {
           Alert.alert("Registro exitoso");
