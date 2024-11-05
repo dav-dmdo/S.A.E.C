@@ -15,9 +15,9 @@ class TeacherSeeder extends Seeder
     public function run(): void
     {
         Teacher::create([
-            "user_ci" => 123,
-            "teacher_card_id" => 123,
-            "teacher_hire_date" => Carbon::create(2018, 9, 1)->format('d-m-y'),
+            "user_ci" => 10000000,
+            "teacher_card_id" => 20121110230,
+            "teacher_hire_date" => Carbon::create(2012, 9, 1)->format('d-m-y'),
         ]);
     }
 }

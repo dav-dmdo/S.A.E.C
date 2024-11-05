@@ -1,88 +1,140 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Definir los tipos de las rutas (coincide con el tipo definido en App.tsx)
 type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
 };
 
-// Tipo de navegación para LoginScreen
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
   const [rememberMe, setRememberMe] = useState(false);
 
-  const navigation = useNavigation<LoginScreenNavigationProp>(); // Definir tipo de navegación
+  const navigation = useNavigation<LoginScreenNavigationProp>();
 
-  const handleLogin = () => {
-    console.log("Login iniciado con:", email, password, rememberMe);
-    navigation.navigate('Home'); // Navegar a la pantalla de Home
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/user/login', {
+        user_email: email,
+        password: password,
+      }, {
+        transformResponse: [(data) => data],
+      });
+
+      const jsonResponse = response.data.replace(/^[^{\[]+/, '');
+      const parsedData = JSON.parse(jsonResponse);
+
+      if (parsedData.access_token) {
+        console.log(parsedData)
+        await AsyncStorage.setItem('access_token', `Bearer ${parsedData.access_token}`);
+        getToken()
+        Alert.alert('Inicio de sesión exitoso', 'Bienvenido a S.A.E.C.');
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Error', `Correo o contraseña incorrectos.`);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const statusCode = error.response.status;
+        const message = error.response.data?.message || 'Error en el servidor';
+        Alert.alert('Error del servidor', `Código de error: ${statusCode} - ${message}`);
+      } else {
+        Alert.alert('Error', 'No se pudo conectar con el servidor.');
+      }
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (token !== null) {
+        // El token está disponible
+        console.log("Token:", token);
+      }
+    } catch (error) {
+      console.error("Error al obtener el token:", error);
+    }
   };
 
   const toggleRememberMe = () => {
     setRememberMe(!rememberMe);
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <View style={styles.container}>
-      <Image 
-        style={styles.logo}
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s' }}
-      />
-
-      <Text style={styles.title}>SISTEMA DE ASISTENCIA Y EVALUACIÓN CONTINUA</Text>
-      <Text style={styles.subtitle}>ENTRA AL S.A.E.C. CON TU CORREO DE LA UNIVERSIDAD</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <View style={styles.rememberContainer}>
-        <TouchableOpacity onPress={toggleRememberMe} style={styles.rememberButton}>
-          <View style={styles.checkBox}>
-            {rememberMe && <View style={styles.checked} />}
-          </View>
-          <Text style={styles.rememberText}>Acuérdame</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
-        </TouchableOpacity>
+      <View style={styles.logoContainer}>
+        <Image 
+          style={styles.logo}
+          source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s' }}
+        />
+        <Text style={styles.title}>SISTEMA DE ASISTENCIA Y EVALUACIÓN CONTINUA</Text>
       </View>
 
-      <TouchableOpacity style={styles.googleButton}>
-        <Image 
-          style={styles.googleIcon}
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png' }}
+      <View style={styles.formContainer}>
+        <TextInput
+          style={styles.input}
+          autoCapitalize='none'
+          placeholder="Correo electrónico"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
-        <Text style={styles.googleButtonText}>Iniciar sesión con Google</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-      </TouchableOpacity>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="Contraseña"
+            secureTextEntry={!showPassword} // Cambia según el estado de `showPassword`
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={toggleShowPassword} style={styles.eyeButton}>
+            <Image
+              source={require('./assets/ojo.png')}
+              style={styles.eyeIcon}
+            />
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.registerText}>Regístrate aquí</Text>
-      </TouchableOpacity>
+        <View style={styles.rememberContainer}>
+          <TouchableOpacity onPress={toggleRememberMe} style={styles.rememberButton}>
+            <View style={styles.checkBox}>
+              {rememberMe && <View style={styles.checked} />}
+            </View>
+            <Text style={styles.rememberText}>Acuérdame</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.registerText}>Regístrate aquí</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -91,35 +143,58 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
-  logo: {
-    width: 150,
-    height: 50,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 20,
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  logo: {
+    width: 250,
+    height: 70,
+    resizeMode: 'contain',
     marginBottom: 10,
   },
-  subtitle: {
-    fontSize: 14,
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
-    color: '#FF6600',
-    marginBottom: 20,
+    color: '#333',
+  },
+  formContainer: {
+    paddingHorizontal: 20,
+    width: '100%',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 20,
+    paddingRight: 10,
+  },
+  inputPassword: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
+  },
+  eyeButton: {
+    padding: 5,
+  },
+  eyeIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#333', // Cambia el color del ícono si lo necesitas
   },
   rememberContainer: {
     flexDirection: 'row',
@@ -150,39 +225,25 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: '#FF6600',
-  },
-  googleButton: {
-    flexDirection: 'row',
-    backgroundColor: '#4285F4',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize: 16,
   },
   loginButton: {
     backgroundColor: '#FF6600',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10,
   },
   loginButtonText: {
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 18,
   },
   registerText: {
     textAlign: 'center',
     color: '#0000FF',
+    fontSize: 16,
+    marginTop: 20,
   },
 });
 
