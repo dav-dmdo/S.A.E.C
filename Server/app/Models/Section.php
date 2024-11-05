@@ -48,21 +48,18 @@ class Section extends Model
         return $this->belongsTo(Term::class, 'term_id', 'term_id');
     }
 
-    // Uno a muchos (Una sección tiene un año académico)
-    public function academicYear() {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
-    }
-
     // Uno a muchos (Una sección tiene un bloque de tiempo)
     public function timeBlock()
     {
-        return $this->belongsTo(TimeBlock::class, ['day_block_id', 'time_block_id']);
+        return $this->belongsTo(TimeBlock::class, 'time_block_id', 'time_block_id');
     }
+
     // Uno a muchos (Una sección tiene salón)
     public function classroom()
     {
-        return $this->belongsTo(Classroom::class, ['block_id', 'classroom_id']);
+        return $this->belongsTo(Classroom::class, 'classroom_id', 'classroom_id');
     }
+
     protected function casts()
     {
         return [

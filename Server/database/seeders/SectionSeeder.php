@@ -73,7 +73,7 @@ class SectionSeeder extends Seeder
             'section_number' => 1,
             'academic_year_id' => 2324,
             'term_id' => 3,
-            'teacher_id' => 123,
+            'teacher_id' => 10000000,
             'day_block_id' => 'LUN-MIE',
             'time_block_id' => 1,
             'block_id' => 'EMG',

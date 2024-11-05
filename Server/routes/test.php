@@ -79,8 +79,7 @@ Route::get('/section/{id}/student/{ci}', function ($id, $ci) {
 Route::get('/classes-year', function () {
 
     $classes = Clase::all();
-    // $year = $classes[0]->section->term->academicYear;
-    $year = $classes[0]->section->academicYear; // funciona de las dos formas
+    $year = $classes[0]->section->term->academicYear; // <-- USAR ESTA PARA EXTRAER LAS CLASES
     return response()->json([
         'message' => 'Hello World!',
         'classes' => $year
