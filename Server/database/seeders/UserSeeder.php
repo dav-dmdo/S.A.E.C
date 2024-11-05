@@ -95,7 +95,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            "user_ci" => 123,
+            "user_ci" => 10000000,
             "user_first_name" => 'Rafael',
             "user_middle_name" => null,
             "user_first_surname" => 'Matienzo',
@@ -106,10 +106,5 @@ class UserSeeder extends Seeder
             "username" => 'elmati',
             "password" => Hash::make('elmati123'),
         ]);
-
-
-
-
-
     }
 }
