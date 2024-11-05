@@ -50,7 +50,7 @@ class UserController extends Controller
                 'user_middle_name' => ['string', 'max:255', 'regex:/^\S+$/'],
                 'user_first_surname' => ['required', 'string', 'max:255', 'regex:/^\S+$/'],
                 'user_second_surname' => ['string', 'max:255', 'regex:/^\S+$/'],
-                'user_email' => ['bail', 'required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^[\w\.-]+@(correo\.unimet\.edu\.ve|unimet\.edu\.ve)$/'],
+                'user_email' => ['bail', 'required', 'email', 'max:255', 'unique:users', 'regex:/^[\w\.-]+@(correo\.unimet\.edu\.ve|unimet\.edu\.ve)$/'],
                 'user_birthdate' => ['required', 'date', 'before:18 years ago'],
                 'user_gender' => ['required', 'string', 'max:1', 'in:M,F,O'],
                 'username' => ['bail', 'required', 'string', 'min:8', 'max:255', 'unique:users', 'regex:/^\S+$/'],
@@ -101,8 +101,8 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'user_email' => 'required|email',
-            'password' => 'required',
+            'user_email' => ['required', 'email', 'max:255', 'regex:/^[\w\.-]+@(correo\.unimet\.edu\.ve|unimet\.edu\.ve)$/'],
+            'password' => ['required', 'string', 'min:8', 'regex:/^\S+$/']
         ]);
 
         if (!Auth::attempt($request->only('user_email', 'password'))) {
