@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } fro
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Login: undefined;
@@ -37,11 +38,14 @@ const LoginScreen = () => {
       const jsonResponse = response.data.replace(/^[^{\[]+/, '');
       const parsedData = JSON.parse(jsonResponse);
 
-      if (parsedData.success) {
+      if (parsedData.access_token) {
+        console.log(parsedData)
+        await AsyncStorage.setItem('access_token', `Bearer ${parsedData.access_token}`);
+        getToken()
         Alert.alert('Inicio de sesión exitoso', 'Bienvenido a S.A.E.C.');
         navigation.navigate('Home');
       } else {
-        Alert.alert('Error', 'Correo o contraseña incorrectos.');
+        Alert.alert('Error', `Correo o contraseña incorrectos.`);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -51,6 +55,18 @@ const LoginScreen = () => {
       } else {
         Alert.alert('Error', 'No se pudo conectar con el servidor.');
       }
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (token !== null) {
+        // El token está disponible
+        console.log("Token:", token);
+      }
+    } catch (error) {
+      console.error("Error al obtener el token:", error);
     }
   };
 
@@ -75,6 +91,7 @@ const LoginScreen = () => {
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
+          autoCapitalize='none'
           placeholder="Correo electrónico"
           keyboardType="email-address"
           value={email}
