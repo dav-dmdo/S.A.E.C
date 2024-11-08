@@ -14,14 +14,15 @@ class Degree extends Model
 
     // Uno a Muchos (Una carrera tiene una escuela)
     public function school() {
-        return $this->belongsTo(School::class);
+        return $this->belongsToMany(Degree::class, 'degrees_subjects', 'degree_id', 'subject_id')
+            ->using(DegreeSubject::class)
+            ->withTimestamps();
     }
 
     // Muchos a Muchos (Una carrera tiene "ve" muchas materias)
     public function subjects() {
         return $this->belongsToMany(Subject::class);
     }
-
 
     protected function casts()
     {

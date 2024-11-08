@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             ClassroomSeeder::class,
             DegreeSeeder::class,
             SubjectSeeder::class,
+            DegreeSubjectSeeder::class,
             SectionSeeder::class,
             SectionStudentSeeder::class,
             ClaseSeeder::class,
