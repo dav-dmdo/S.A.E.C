@@ -19,6 +19,30 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function teachers()
+    {
+        $teachers = Teacher::all();
+        $array = array();
+
+        foreach ($teachers as $teacher) {
+            array_push($array, $teacher->user);
+        }
+
+        return $array;
+    }
+
+    public function students()
+    {
+        $students = Student::all();
+        $array = array();
+
+        foreach ($students as $student) {
+            array_push($array, $student->user);
+        }
+
+        return $array;
+    }
+
     public function show($user_ci)
     {
         $user = User::where("user_ci", $user_ci)->first();
