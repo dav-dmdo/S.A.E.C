@@ -24,10 +24,6 @@ class SubjectController extends Controller
         return $subject;
     }
 
-    public function teacher($subject_id){
-        
-    }
-
     public function store(Request $request)
     {
         return "Not avaliable";
