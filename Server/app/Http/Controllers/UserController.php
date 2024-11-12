@@ -19,6 +19,30 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function teachers()
+    {
+        $teachers = Teacher::all();
+        $array = array();
+
+        foreach ($teachers as $teacher) {
+            array_push($array, $teacher->user);
+        }
+
+        return $array;
+    }
+
+    public function students()
+    {
+        $students = Student::all();
+        $array = array();
+
+        foreach ($students as $student) {
+            array_push($array, $student->user);
+        }
+
+        return $array;
+    }
+
     public function show($user_ci)
     {
         $user = User::where("user_ci", $user_ci)->first();
@@ -40,7 +64,6 @@ class UserController extends Controller
         return $user;
     }
 
-    // Register
     public function store(Request $request)
     {
         try {
@@ -63,41 +86,18 @@ class UserController extends Controller
             $user = User::create($data);
 
             // Creación de tokens
-            // $token = $user->createToken('authToken')->plainTextToken;
+            $token = $user->createToken('authToken')->plainTextToken;
 
             return response()->json([
                 'user' => $user,
-                // 'access_token' => $token,
-                // 'token_type' => 'Bearer'
+                'access_token' => $token,
+                'token_type' => 'Bearer'
             ], 201);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 400);
         }
     }
 
-    public function update(Request $request, $user_ci)
-    {
-        $user = User::where("user_ci", $user_ci)->first();
-
-        // Existencia del usuario
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-
-        // Lógica
-        if ($request->has('password')) {
-            $password = Hash::make($request->password);
-            $user->password = $password;
-            $user->save();
-            return response()->json($user, 201);
-        } else {
-            $user->update($request->all());
-            $user->save();
-            return response()->json($user, 201);
-        }
-    }
-
-    // Login
     public function login(Request $request)
     {
         $request->validate([
@@ -121,7 +121,6 @@ class UserController extends Controller
         ], 200);
     }
 
-    // logout
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -131,13 +130,36 @@ class UserController extends Controller
         ], 200);
     }
 
+    // ********** Protegida: SÓLO EL MISMO USUARIO **********
+    public function update(Request $request, $user_ci)
+    {
+        try {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();;
+
+            if (!$user || $user->user_ci != $user_ci) {
+                return response()->json(['error' => "Usuario no autorizado para actualizar otro usuario"], 401);
+            }
+
+            if ($request->has('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->update($request->except(['password'])); // Excluye 'password' para evitar sobrescritura accidental
+            return response()->json($user, 201);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 400);
+        }
+    }
+
+    // ********** Protegida: SÓLO EL MISMO USUARIO **********
     public function destroy($user_ci)
     {
-        $user = User::where("user_ci", $user_ci)->first();;
+        /** @var \App\Models\User $user */
+        $user = Auth::user();;
 
-        // Existencia del usuario
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+        if (!$user || $user->user_ci != $user_ci) {
+            return response()->json(['error' => "Usuario no autorizado para eliminar otro usuario"], 401);
         }
 
         $user->delete();

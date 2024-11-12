@@ -31,7 +31,7 @@ class Subject extends Model
     protected function casts(): array
     {
         return [
-            "subject_id" => "int",
+            "subject_id" => "string",
             "subject_name" => "string",
             "subject_description" => "string"
         ];
