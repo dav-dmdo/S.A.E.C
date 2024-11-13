@@ -85,6 +85,25 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
             $user = User::create($data);
 
+            // Creación de student/teacher
+            if (str_contains($data['user_email'], '@correo.unimet.edu.ve')) {
+                $student = Student::create([
+                    "user_ci" => $data["user_ci"],
+                    "student_card_id" => now()->format('Ymd') . str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT),
+                    "student_enrollment_date" => now()->format('d-m-y')
+                ]);
+                $student->save();
+            }
+            // Creación de teacher
+            else {
+                $student = Teacher::create([
+                    "user_ci" => $data["user_ci"],
+                    "teacher_card_id" => now()->format('Ymd') . str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT),
+                    "teacher_hire_date" => now()->format('d-m-y')
+                ]);
+                $student->save();
+            }
+
             // Creación de tokens
             $token = $user->createToken('authToken')->plainTextToken;
 
