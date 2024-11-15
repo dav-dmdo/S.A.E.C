@@ -43,6 +43,11 @@ class Section extends Model
         return $this->belongsTo(Subject::class);
     }
 
+    // Uno a muchos (Una sección tiene un año académico)
+    public function academyYear(){
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'academic_year_id');
+    }
+
     // Uno a muchos (Una sección tiene un trimestre)
     public function term() {
         return $this->belongsTo(Term::class, 'term_id', 'term_id');

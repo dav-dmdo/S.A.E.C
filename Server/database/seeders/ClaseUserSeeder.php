@@ -17,16 +17,8 @@ class ClaseUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-
-        foreach ($users as $user) {
-            if ($user->student) {
-                $this->handleStudent($user->student);
-            }
-            if ($user->teacher){
-                $this->handleTeacher($user->teacher);
-            }
-        }
+        $user_test = User::find(1);
+        $this->handleStudent($user_test->student);
     }
 
     public function handleStudent(Student $student)
