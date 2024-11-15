@@ -119,25 +119,30 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'user_email' => ['required', 'email', 'max:255', 'regex:/^[\w\.-]+@(correo\.unimet\.edu\.ve|unimet\.edu\.ve)$/'],
-            'password' => ['required', 'string', 'min:8', 'regex:/^\S+$/']
-        ]);
+        try {
+            $request->validate([
+                'user_email' => ['required', 'email', 'max:255', 'regex:/^[\w\.-]+@(correo\.unimet\.edu\.ve|unimet\.edu\.ve)$/'],
+                'password' => ['required', 'string', 'min:8', 'regex:/^\S+$/']
+            ]);
 
-        if (!Auth::attempt($request->only('user_email', 'password'))) {
+            if (!Auth::attempt($request->only('user_email', 'password'))) {
+                return response()->json([
+                    'message' => 'Invalid login details'
+                ], 401);
+            }
+
+            $user = $request->user();
+            $token = $user->createToken('authToken')->plainTextToken;
+
             return response()->json([
-                'message' => 'Invalid login details'
-            ], 401);
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ], 200);
+            
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 400);
         }
-
-        $user = $request->user();
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ], 200);
     }
 
     public function logout(Request $request)
