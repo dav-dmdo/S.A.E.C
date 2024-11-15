@@ -30,8 +30,8 @@ class ClaseUserSeeder extends Seeder
                 ClaseUser::create([
                     'class_id' => $class->id,
                     'user_id' => $student->user_ci,
-                    'attendance_arrival' => null,
-                    'attendance_departure' => null,
+                    'attendance_arrival' => "07:00",
+                    'attendance_comment' => null,
                     'attendance_rating' => null
                 ]);
             }
@@ -49,7 +49,7 @@ class ClaseUserSeeder extends Seeder
                     'class_id' => $class->id,
                     'user_id' => $teacher->user_ci,
                     'attendance_arrival' => null,
-                    'attendance_departure' => null,
+                    'attendance_comment' => null,
                     'attendance_rating' => null
                 ]);
             }

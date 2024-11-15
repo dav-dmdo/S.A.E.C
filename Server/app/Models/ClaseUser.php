@@ -12,7 +12,7 @@ class ClaseUser extends Pivot
         'class_id',
         'user_id',
         'attendance_arrival',
-        'attendance_departure',
+        'attendance_comment',
         'attendance_rating'
     ];
 
@@ -20,8 +20,7 @@ class ClaseUser extends Pivot
         'class_id' => 'int',
         'user_id' => 'int',
         'attendance_arrival' => 'datetime:H:i',
-        'attendance_departure' => 'datetime:H:i',
-        'attendance_rating' => 'int'
+        'attendance_rating' => 'float'
     ];
 
     public function class()
