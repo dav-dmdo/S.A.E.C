@@ -6,9 +6,9 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return "";
-});
+// Basic routes
+Route::get('/',  fn() => "");
+Route::get('/unauthorized',  fn() => response()->json(['error' => 'unauthorized'], 401));
 
 // User API
 Route::get('api/user', [UserController::class, 'index']);
@@ -28,6 +28,9 @@ Route::get('api/subject', [SubjectController::class, 'index']);
 Route::get('api/subject/{subject_id}', [SubjectController::class, 'show']);
 
 // Attendance API
+Route::get('api/attendance', [ClaseUserController::class, 'index']);
+Route::get('api/attendance/{user_ci}', [ClaseUserController::class, 'show']);
+Route::post('api/attendance', [ClaseUserController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('api/attendance', ClaseUserController::class);
+    Route::put('api/attendance/{user_ci}', [ClaseUserController::class, 'update']);
 });

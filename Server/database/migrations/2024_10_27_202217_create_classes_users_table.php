@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('user_id');
 
             $table->time('attendance_arrival')->nullable()->default(null); // Si no llega, no se registra, si llega, se registra la hora. Por defecto es null como que no ha llegado.
-            $table->time('attendance_departure')->nullable()->default(null);
-            $table->enum('attendance_rating', [-2, -1, 0, 1, 2])->nullable()->default(null); // -2: Muy mal, -1: Mal, 0: Regular, 1: Bien, 2: Muy bien. Si no llega no calififica. Por defecto es null como que no ha llegado.
+            $table->string('attendance_comment')->nullable()->default(null);
+            $table->float('attendance_rating', 2, 1)->nullable()->default(null); // Permite valores flotantes de 1.0 a 5.0 con una precisión de un decimal. Por defecto es null como que no ha llegado.
 
             $table->unique(['class_id', 'user_id'], 'unique_attendance_combination');
             $table->foreign('class_id')->references('id')->on('classes');
