@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App'; // Ajusta la ruta si es necesario
+import { RootStackParamList } from '../App';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceView'>;
 
 const AttendanceRecord = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [day, setDay] = useState<string>('');
   const [section, setSection] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [rating, setRating] = useState<number>(3);
+  const [attendedSubjects, setAttendedSubjects] = useState<Set<string>>(new Set()); // Set para materias con asistencia marcada
 
   const navigation = useNavigation<NavigationProp>();
 
@@ -32,6 +34,10 @@ const AttendanceRecord = () => {
   const randomTime = () => `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}AM`;
 
   const openModal = (subject: string, day: string) => {
+    if (!attendedSubjects.has(subject)) {
+      Alert.alert("No estás asistente en esta clase", "Debe marcar su asistencia para poder calificar o comentar.");
+      return;
+    }
     setSelectedSubject(subject);
     setDay(day);
     setSection(randomSection());
@@ -39,8 +45,17 @@ const AttendanceRecord = () => {
     setModalVisible(true);
   };
 
-  const closeModal = () => {
-    setModalVisible(false);
+  const openAttendanceModal = (subject: string) => {
+    setSelectedSubject(subject);
+    setAttendanceModalVisible(true);
+  };
+
+  const closeModal = () => setModalVisible(false);
+
+  const markAttendance = () => {
+    setAttendedSubjects(prev => new Set(prev).add(selectedSubject));
+    setAttendanceModalVisible(false);
+    Alert.alert("Asistencia marcada", `Usted ha sido marcado como asistente en ${selectedSubject}.`);
   };
 
   return (
@@ -68,7 +83,11 @@ const AttendanceRecord = () => {
         {subjects.map((item, index) => (
           <View key={index} style={styles.tableRow}>
             <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.day}</Text></View>
-            <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.subject}</Text></View>
+            <View style={styles.centeredCell}>
+              <TouchableOpacity onPress={() => openAttendanceModal(item.subject)}>
+                <Text style={[styles.tableCell, styles.subjectText]}>{item.subject}</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.centeredCell}>
               <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
                 <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
@@ -98,13 +117,19 @@ const AttendanceRecord = () => {
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
 
-      {/* Modal para mostrar la información de asistencia */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={closeModal}
-      >
+      {/* Modal para marcar asistencia */}
+      <Modal visible={attendanceModalVisible} animationType="slide" transparent={true} onRequestClose={() => setAttendanceModalVisible(false)}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <TouchableOpacity onPress={markAttendance}>
+              <Text style={styles.buttonText}>Marcar como Asistente</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal para calificación y comentario */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Registro de asistencia</Text>
@@ -133,10 +158,7 @@ const AttendanceRecord = () => {
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
                     <Image
                       source={require('../assets/estrella.png')}
-                      style={[
-                        styles.starIcon,
-                        { tintColor: star <= rating ? '#f4a261' : '#ccc' }
-                      ]}
+                      style={[styles.starIcon, { tintColor: star <= rating ? '#f4a261' : '#ccc' }]}
                     />
                   </TouchableOpacity>
                 ))}
@@ -167,6 +189,7 @@ const AttendanceRecord = () => {
   );
 };
 
+// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -234,6 +257,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
+  subjectText: {
+    color: '#000',
+    textDecorationLine: 'underline',
+  },
   infoIcon: {
     width: 20,
     height: 20,
@@ -287,6 +314,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
   },
   modalSection: {
     marginBottom: 10,
