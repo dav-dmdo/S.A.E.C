@@ -14,11 +14,16 @@ class SectionStudentSeeder extends Seeder
      */
     public function run(): void
     {
-        $section = Section::find(1);
+        // Extraer los 5 estudiantes
         $students = Student::all();
 
-        foreach ($students as $student) {
-            $section->students()->attach($student->user_ci, ['status' => 'In Progress']);
+        // Inscripción de los 5 estudiantes a las 5 materias
+        for ($i = 1; $i <= Section::all()->count(); $i++) {
+            $section = Section::find($i);
+
+            foreach ($students as $student) {
+                $section->students()->attach($student->user_ci, ['status' => 'In Progress']);
+            }
         }
     }
 }

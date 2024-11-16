@@ -26,6 +26,11 @@ class AcademicYear extends Model
         return $this->hasMany(Term::class, 'academic_year_id', 'academic_year_id');
     }
 
+    // Uno a muchos (Un año acadmémico pertenece a varios trimestres)
+    public function sections() {
+        return $this->hasMany(Section::class, 'academic_year_id', 'academic_year_id');
+    }
+
     protected function casts()
     {
         return [

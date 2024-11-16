@@ -17,16 +17,8 @@ class ClaseUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-
-        foreach ($users as $user) {
-            if ($user->student) {
-                $this->handleStudent($user->student);
-            }
-            if ($user->teacher){
-                $this->handleTeacher($user->teacher);
-            }
-        }
+        $user_test = User::find(1);
+        $this->handleStudent($user_test->student);
     }
 
     public function handleStudent(Student $student)
@@ -38,8 +30,8 @@ class ClaseUserSeeder extends Seeder
                 ClaseUser::create([
                     'class_id' => $class->id,
                     'user_id' => $student->user_ci,
-                    'attendance_arrival' => null,
-                    'attendance_departure' => null,
+                    'attendance_arrival' => "07:00",
+                    'attendance_comment' => null,
                     'attendance_rating' => null
                 ]);
             }
@@ -57,7 +49,7 @@ class ClaseUserSeeder extends Seeder
                     'class_id' => $class->id,
                     'user_id' => $teacher->user_ci,
                     'attendance_arrival' => null,
-                    'attendance_departure' => null,
+                    'attendance_comment' => null,
                     'attendance_rating' => null
                 ]);
             }

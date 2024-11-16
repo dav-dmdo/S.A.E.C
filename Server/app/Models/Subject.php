@@ -15,19 +15,23 @@ class Subject extends Model
     protected $hidden = [];
 
     // Muchos a Muchos (Una materia tiene "la ven" muchas carreras)
-    public function degrees() {
-        return $this->belongsToMany(Degree::class);
+    public function degrees()
+    {
+        return $this->belongsToMany(Degree::class, 'degrees_subjects', 'subject_id', 'degree_id')
+            ->using(DegreeSubject::class)
+            ->withTimestamps();;
     }
 
     // Uno a muchos (Una materia tiene varias secciones)
-    public function sections(){
+    public function sections()
+    {
         return $this->hasMany(Section::class);
     }
 
     protected function casts(): array
     {
         return [
-            "subject_id" => "int",
+            "subject_id" => "string",
             "subject_name" => "string",
             "subject_description" => "string"
         ];
