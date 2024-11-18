@@ -11,15 +11,18 @@ type RootStackParamList = {
   Register: undefined;
 };
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+// Añadimos setIsTeacher como prop
+interface LoginScreenProps {
+  setIsTeacher: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const LoginScreen = () => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ setIsTeacher }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
   const [rememberMe, setRememberMe] = useState(false);
 
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -39,9 +42,18 @@ const LoginScreen = () => {
       const parsedData = JSON.parse(jsonResponse);
 
       if (parsedData.access_token) {
-        console.log(parsedData)
+        console.log(parsedData);
+
+        // Determinar si el usuario es profesor o estudiante según el correo
+        if (email.endsWith('@unimet.edu.ve')) {
+          setIsTeacher(true); // Profesor
+        } else {
+          setIsTeacher(false); // Estudiante
+        }
+
         await AsyncStorage.setItem('access_token', `Bearer ${parsedData.access_token}`);
-        getToken()
+        getToken();
+
         Alert.alert('Inicio de sesión exitoso', 'Bienvenido a S.A.E.C.');
         navigation.navigate('Home');
       } else {
@@ -62,11 +74,10 @@ const LoginScreen = () => {
     try {
       const token = await AsyncStorage.getItem('access_token');
       if (token !== null) {
-        // El token está disponible
-        console.log("Token:", token);
+        console.log('Token:', token);
       }
     } catch (error) {
-      console.error("Error al obtener el token:", error);
+      console.error('Error al obtener el token:', error);
     }
   };
 
@@ -81,9 +92,11 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image 
+        <Image
           style={styles.logo}
-          source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s' }}
+          source={{
+            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTNjlOWDOfwj0CWXLa1qFnnzEJlJQHWygFXA&s',
+          }}
         />
         <Text style={styles.title}>SISTEMA DE ASISTENCIA Y EVALUACIÓN CONTINUA</Text>
       </View>
@@ -91,7 +104,7 @@ const LoginScreen = () => {
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
-          autoCapitalize='none'
+          autoCapitalize="none"
           placeholder="Correo electrónico"
           keyboardType="email-address"
           value={email}
@@ -107,18 +120,13 @@ const LoginScreen = () => {
             onChangeText={setPassword}
           />
           <TouchableOpacity onPress={toggleShowPassword} style={styles.eyeButton}>
-            <Image
-              source={require('./assets/ojo.png')}
-              style={styles.eyeIcon}
-            />
+            <Image source={require('./assets/ojo.png')} style={styles.eyeIcon} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.rememberContainer}>
           <TouchableOpacity onPress={toggleRememberMe} style={styles.rememberButton}>
-            <View style={styles.checkBox}>
-              {rememberMe && <View style={styles.checked} />}
-            </View>
+            <View style={styles.checkBox}>{rememberMe && <View style={styles.checked} />}</View>
             <Text style={styles.rememberText}>Acuérdame</Text>
           </TouchableOpacity>
 
@@ -194,7 +202,7 @@ const styles = StyleSheet.create({
   eyeIcon: {
     width: 24,
     height: 24,
-    tintColor: '#333', // Cambia el color del ícono si lo necesitas
+    tintColor: '#333',
   },
   rememberContainer: {
     flexDirection: 'row',
