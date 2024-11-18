@@ -15,7 +15,7 @@ const StudentProfile = () => {
         });
         setProfile(response.data);
       } catch (error) {
-        console.error('Error fetching student profile:', error);
+        console.error('Error mostrando el perfil del estudiante:', error);
       }
     };
 
@@ -30,7 +30,7 @@ const StudentProfile = () => {
           <Image source={{ uri: profile.photo }} style={styles.avatar} />
           <Text style={styles.text}>Nombre: {profile.name}</Text>
           <Text style={styles.text}>Correo: {profile.email}</Text>
-          <Text style={styles.text}>Matrícula: {profile.student_id}</Text>
+          <Text style={styles.text}>Carnet: {profile.student_id}</Text>
         </>
       )}
     </View>

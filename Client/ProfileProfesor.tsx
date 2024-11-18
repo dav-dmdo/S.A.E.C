@@ -15,7 +15,7 @@ const TeacherProfile = () => {
         });
         setProfile(response.data);
       } catch (error) {
-        console.error('Error fetching teacher profile:', error);
+        console.error('Error mostrando el perfil del profesor:', error);
       }
     };
 
