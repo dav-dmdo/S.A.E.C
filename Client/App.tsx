@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import Home from './Home';
 import RegisterScreen from './RegisterScreen';
-import AttendanceView from './Home/AttendanceView';
+import AttendanceView from './Home/AttendanceView'; // Vista de asistencias para estudiantes
+import TeacherAttendanceView from './profes/TeacherAttendanceView'; // Vista de asistencias para profesores
 import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
@@ -13,10 +14,10 @@ export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
-  AttendanceView: undefined;
+  AttendanceView: undefined; // Asistencias para estudiantes/profesores
 };
 
-// Crear la pila de navegación con el tipo RootStackParamList
+// Crear la pila de navegación
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Crear y tipar el objeto navigationRef
@@ -39,6 +40,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
 
 const App = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false); // Estado para determinar si es profesor
 
   // Función para opciones de encabezado comunes
   const commonHeaderOptions = (title: string): NativeStackNavigationOptions => ({
@@ -59,25 +61,33 @@ const App = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} // Ocultar el header en la pantalla de login
+        {/* Login */}
+        <Stack.Screen
+          name="Login"
+          options={{ headerShown: false }}
+        >
+          {props => <LoginScreen {...props} setIsTeacher={setIsTeacher} />}
+        </Stack.Screen>
+
+        {/* Home */}
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={commonHeaderOptions('Inicio')}
         />
-        <Stack.Screen 
-          name="Home" 
-          component={Home} 
-          options={commonHeaderOptions('Inicio')} // Opciones de header para Home
+
+        {/* Registro */}
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen 
-          name="Register" 
-          component={RegisterScreen} 
-          options={{ headerShown: false }} // Ocultar el header en RegisterScreen
-        />
-        <Stack.Screen 
-          name="AttendanceView" 
-          component={AttendanceView} 
-          options={commonHeaderOptions('Asistencias')} // Opciones de header para AttendanceView
+
+        {/* Asistencias */}
+        <Stack.Screen
+          name="AttendanceView"
+          component={isTeacher ? TeacherAttendanceView : AttendanceView} // Profesor o estudiante
+          options={commonHeaderOptions('Asistencias')}
         />
       </Stack.Navigator>
 
@@ -91,10 +101,20 @@ const App = () => {
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.menuTitle}>Menú de Navegación</Text>
-            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('Home'); }}>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigationRef.navigate('Home');
+              }}
+            >
               <Text style={styles.menuOption}>Inicio</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('AttendanceView'); }}>
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                navigationRef.navigate('AttendanceView');
+              }}
+            >
               <Text style={styles.menuOption}>Asistencias</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setMenuVisible(false)}>
