@@ -68,7 +68,11 @@ const Home = () => {
             <Text style={styles.gridCount}>7</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#e4a1f4' }]}>
+          {/* Botón de Evaluación */}
+          <TouchableOpacity
+            style={[styles.gridItem, { backgroundColor: '#e4a1f4' }]}
+            onPress={() => navigation.navigate('Evaluations')} // Navegación hacia Evaluations
+          >
             <Image 
               source={require('./assets/evaluacion.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}

@@ -6,6 +6,7 @@ import Home from './Home';
 import RegisterScreen from './RegisterScreen';
 import AttendanceView from './Home/AttendanceView'; // Vista de asistencias para estudiantes
 import TeacherAttendanceView from './profes/TeacherAttendanceView'; // Vista de asistencias para profesores
+import EvaluationsView from './profes/EvaluacionesProfe'; // Vista de Evaluaciones para profesores
 import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
@@ -15,6 +16,7 @@ export type RootStackParamList = {
   Home: undefined;
   Register: undefined;
   AttendanceView: undefined; // Asistencias para estudiantes/profesores
+  Evaluations: undefined; // Nueva entrada para Evaluaciones
 };
 
 // Crear la pila de navegación
@@ -52,9 +54,7 @@ const App = () => {
         style={{ width: 100, height: 40, resizeMode: 'contain', marginLeft: 10 }}
       />
     ),
-    headerRight: () => (
-      <MenuButton onPress={() => setMenuVisible(true)} />
-    ),
+    headerRight: () => <MenuButton onPress={() => setMenuVisible(true)} />,
     headerBackVisible: false, // Desactiva el botón "back" si no se necesita
   });
 
@@ -89,6 +89,15 @@ const App = () => {
           component={isTeacher ? TeacherAttendanceView : AttendanceView} // Profesor o estudiante
           options={commonHeaderOptions('Asistencias')}
         />
+
+        {/* Evaluaciones */}
+        {isTeacher && (
+          <Stack.Screen
+            name="Evaluations"
+            component={EvaluationsView} // Vista de Evaluaciones para profesores
+            options={commonHeaderOptions('Evaluaciones')}
+          />
+        )}
       </Stack.Navigator>
 
       {/* Modal de menú de navegación */}
@@ -117,6 +126,16 @@ const App = () => {
             >
               <Text style={styles.menuOption}>Asistencias</Text>
             </TouchableOpacity>
+            {isTeacher && (
+              <TouchableOpacity
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate('Evaluations'); // Solo disponible para profesores
+                }}
+              >
+                <Text style={styles.menuOption}>Evaluaciones</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity onPress={() => setMenuVisible(false)}>
               <Text style={styles.menuClose}>Cerrar</Text>
             </TouchableOpacity>
