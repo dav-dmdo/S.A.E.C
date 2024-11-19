@@ -4,34 +4,31 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import Home from './Home';
 import RegisterScreen from './RegisterScreen';
-import AttendanceView from './Home/AttendanceView'; // Vista de asistencias para estudiantes
-import TeacherAttendanceView from './profes/TeacherAttendanceView'; // Vista de asistencias para profesores
-import EvaluationsView from './profes/EvaluacionesProfe'; // Vista de Evaluaciones para profesores
+import AttendanceView from './Home/AttendanceView';
+import TeacherAttendanceView from './profes/TeacherAttendanceView';
+import TeacherEvaluations from './profes/EvaluacionesProfe';
+import EvaluationsView from './Home/Evaluaciones';
 import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
-// Definir el tipo RootStackParamList
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
-  AttendanceView: undefined; // Asistencias para estudiantes/profesores
-  Evaluations: undefined; // Nueva entrada para Evaluaciones
+  AttendanceView: undefined;
+  Evaluations: undefined;
+  TeacherEvaluations: undefined;
 };
 
-// Crear la pila de navegación
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Crear y tipar el objeto navigationRef
 import { createNavigationContainerRef } from '@react-navigation/native';
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
-// Tipado para el botón de menú
 interface MenuButtonProps {
   onPress: () => void;
 }
 
-// Componente para el botón de menú
 const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
   <TouchableOpacity style={{ padding: 10 }} onPress={onPress}>
     <View style={styles.menuBar} />
@@ -42,12 +39,11 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
 
 const App = () => {
   const [menuVisible, setMenuVisible] = useState(false);
-  const [isTeacher, setIsTeacher] = useState(false); // Estado para determinar si es profesor
+  const [isTeacher, setIsTeacher] = useState(false);
 
-  // Función para opciones de encabezado comunes
   const commonHeaderOptions = (title: string): NativeStackNavigationOptions => ({
     title,
-    headerTitleAlign: 'center', // Centrar el título
+    headerTitleAlign: 'center',
     headerLeft: () => (
       <Image
         source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
@@ -55,52 +51,46 @@ const App = () => {
       />
     ),
     headerRight: () => <MenuButton onPress={() => setMenuVisible(true)} />,
-    headerBackVisible: false, // Desactiva el botón "back" si no se necesita
+    headerBackVisible: false,
   });
 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Login">
-        {/* Login */}
         <Stack.Screen
           name="Login"
           options={{ headerShown: false }}
         >
           {props => <LoginScreen {...props} setIsTeacher={setIsTeacher} />}
         </Stack.Screen>
-
-        {/* Home */}
         <Stack.Screen
           name="Home"
-          component={Home}
           options={commonHeaderOptions('Inicio')}
-        />
-
-        {/* Registro */}
+        >
+          {props => <Home {...props} isTeacher={isTeacher} />}
+        </Stack.Screen>
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
           options={{ headerShown: false }}
         />
-
-        {/* Asistencias */}
         <Stack.Screen
           name="AttendanceView"
-          component={isTeacher ? TeacherAttendanceView : AttendanceView} // Profesor o estudiante
+          component={isTeacher ? TeacherAttendanceView : AttendanceView}
           options={commonHeaderOptions('Asistencias')}
         />
-
-        {/* Evaluaciones */}
-        {isTeacher && (
-          <Stack.Screen
-            name="Evaluations"
-            component={EvaluationsView} // Vista de Evaluaciones para profesores
-            options={commonHeaderOptions('Evaluaciones')}
-          />
-        )}
+        <Stack.Screen
+          name="Evaluations"
+          component={EvaluationsView}
+          options={commonHeaderOptions('Evaluaciones')}
+        />
+        <Stack.Screen
+          name="TeacherEvaluations"
+          component={TeacherEvaluations}
+          options={commonHeaderOptions('Evaluaciones Profesores')}
+        />
       </Stack.Navigator>
 
-      {/* Modal de menú de navegación */}
       <Modal
         visible={menuVisible}
         transparent={true}
@@ -130,7 +120,7 @@ const App = () => {
               <TouchableOpacity
                 onPress={() => {
                   setMenuVisible(false);
-                  navigationRef.navigate('Evaluations'); // Solo disponible para profesores
+                  navigationRef.navigate('TeacherEvaluations');
                 }}
               >
                 <Text style={styles.menuOption}>Evaluaciones</Text>
@@ -148,7 +138,6 @@ const App = () => {
 
 export default App;
 
-// Estilos
 const styles = StyleSheet.create({
   menuBar: {
     width: 25,

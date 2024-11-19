@@ -7,7 +7,11 @@ import { RootStackParamList } from './App';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
-const Home = () => {
+interface HomeProps {
+  isTeacher: boolean; // Estado para verificar si el usuario es profesor
+}
+
+const Home: React.FC<HomeProps> = ({ isTeacher }) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
@@ -71,7 +75,13 @@ const Home = () => {
           {/* Botón de Evaluación */}
           <TouchableOpacity
             style={[styles.gridItem, { backgroundColor: '#e4a1f4' }]}
-            onPress={() => navigation.navigate('Evaluations')} // Navegación hacia Evaluations
+            onPress={() => {
+              if (isTeacher) {
+                navigation.navigate('TeacherEvaluations'); // Navegar a evaluaciones para profesores
+              } else {
+                navigation.navigate('Evaluations'); // Navegar a evaluaciones para estudiantes
+              }
+            }}
           >
             <Image 
               source={require('./assets/evaluacion.png')} 
