@@ -1,25 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import axios from 'axios';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Evaluations'>;
 
 const EvaluationsView = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-  const navigation = useNavigation<NavigationProp>();
+  const [evaluations, setEvaluations] = useState<any[]>([]); // Inicialización segura como array vacío
 
-  const subjects = [
-    { subject: "Matemática III", rating: 4, comment: "Explicación muy clara y organizada." },
-    { subject: "Estadística para ing.", rating: 5, comment: "Excelente clase, aprendí muchísimo." },
-    { subject: "Ideas Emprendedoras", rating: 3, comment: "Interesante, pero faltaron ejemplos prácticos." },
-    { subject: "Base de Datos I", rating: 5, comment: "Muy interactiva y útil para proyectos reales." },
-    { subject: "Matemática I", rating: 4, comment: "El profesor resolvió dudas detalladamente." },
-  ];
+  useEffect(() => {
+    const fetchEvaluations = async () => {
+      try {
+        const response = await axios.get('http://18.209.15.163/api/attendance');
+        const data = response.data;
+
+        if (Array.isArray(data)) {
+          setEvaluations(data);
+        } else {
+          console.error('La API no devolvió un array:', data);
+          setEvaluations([]); // Manejo seguro si no es un array
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar las evaluaciones.');
+        console.error('Error al obtener las evaluaciones:', error);
+      }
+    };
+
+    fetchEvaluations();
+  }, []);
 
   const openModal = (subject: string, rating: number, comment: string) => {
     setSelectedSubject(subject);
@@ -33,8 +48,7 @@ const EvaluationsView = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
+    <View style={styles.container}>
       <View style={styles.header}>
         <Image
           source={require('../assets/evaluacion.png')}
@@ -48,28 +62,30 @@ const EvaluationsView = () => {
         </View>
       </View>
 
-      {/* Tabla de registros */}
-      <View style={styles.tableContainer}>
+      <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderText}>CLASES</Text>
           <Text style={styles.tableHeaderText}>EVALUACIONES</Text>
         </View>
 
-        {subjects.map((item, index) => (
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.centeredCell}>
-              <Text style={styles.tableCell}>{item.subject}</Text>
+        {evaluations.length > 0 ? (
+          evaluations.map((item: any, index: number) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={styles.centeredCell}>
+                <Text style={styles.tableCell}>{item.subject}</Text>
+              </View>
+              <View style={styles.centeredCell}>
+                <TouchableOpacity onPress={() => openModal(item.subject, item.rating, item.comment)}>
+                  <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.centeredCell}>
-              <TouchableOpacity onPress={() => openModal(item.subject, item.rating, item.comment)}>
-                <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </View>
+          ))
+        ) : (
+          <Text style={styles.noDataText}>No hay evaluaciones disponibles.</Text>
+        )}
+      </ScrollView>
 
-      {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Text style={styles.footerLink}>Inicio</Text>
@@ -80,13 +96,7 @@ const EvaluationsView = () => {
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
 
-      {/* Modal para detalles de evaluación */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={closeModal}
-      >
+      <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Detalle de Evaluación</Text>
@@ -101,10 +111,7 @@ const EvaluationsView = () => {
                   <Image
                     key={star}
                     source={require('../assets/estrella.png')}
-                    style={[
-                      styles.starIcon,
-                      { tintColor: star <= rating ? '#f4a261' : '#ccc' },
-                    ]}
+                    style={[styles.starIcon, { tintColor: star <= rating ? '#f4a261' : '#ccc' }]}
                   />
                 ))}
               </View>
@@ -119,11 +126,10 @@ const EvaluationsView = () => {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 };
 
-// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   tableContainer: {
-    marginTop: 20,
+    flex: 1,
     paddingHorizontal: 20,
   },
   tableHeader: {
@@ -196,10 +202,19 @@ const styles = StyleSheet.create({
     height: 20,
     tintColor: '#3e64ff',
   },
+  noDataText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#555',
+  },
   footer: {
     paddingVertical: 20,
     backgroundColor: '#3e64ff',
     alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
   },
   footerLink: {
     color: '#fff',
