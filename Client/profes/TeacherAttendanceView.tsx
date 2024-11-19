@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App'; // Ajusta la ruta si es necesario
@@ -8,57 +8,28 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceV
 
 const TeacherAttendanceRecord = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [commentsVisible, setCommentsVisible] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
-  const [day, setDay] = useState<string>('');
-  const [section, setSection] = useState<string>('');
-  const [time, setTime] = useState<string>('');
-  const [rating, setRating] = useState<number>(3);
+  const [studentsAttended, setStudentsAttended] = useState<number>(3); // Cantidad de asistentes
+  const [totalStudents, setTotalStudents] = useState<number>(30); // Total de estudiantes
 
   const navigation = useNavigation<NavigationProp>();
 
-  const comments = [
-    "Muy buena clase, el profesor explicó todo muy bien.",
-    "La clase fue interesante, pero me gustaría que fuera más interactiva.",
-    "No entendí algunos conceptos, creo que podría haber más ejemplos prácticos.",
-    "La clase fue rápida, me gustaría que el profesor se detuviera más en ciertos temas.",
-    "Excelente clase, me gustó mucho el enfoque práctico."
-  ];
-
   const subjects = [
-    { day: "Mie.", subject: "Matemática III" },
-    { day: "Mie.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Ideas Emprendedoras" },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
+    { day: 'Mie.', subject: 'Matemática III' },
+    { day: 'Mie.', subject: 'Estadística para ing.' },
+    { day: 'Mar.', subject: 'Ideas Emprendedoras' },
+    { day: 'Mar.', subject: 'Base de Datos I' },
+    { day: 'Lun.', subject: 'Matemática I' },
+    { day: 'Lun.', subject: 'Estadística para ing.' },
   ];
 
-  const randomSection = () => `BPTM${Math.floor(Math.random() * 100)}-0${Math.floor(Math.random() * 10)}`;
-  const randomTime = () => `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}AM`;
-
-  const openModal = (subject: string, day: string) => {
+  const openModal = (subject: string) => {
     setSelectedSubject(subject);
-    setDay(day);
-    setSection(randomSection());
-    setTime(randomTime());
     setModalVisible(true);
-  };
-
-  const openCommentsModal = (subject: string) => {
-    setSelectedSubject(subject);
-    setCommentsVisible(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
-  };
-
-  const closeCommentsModal = () => {
-    setCommentsVisible(false);
   };
 
   return (
@@ -73,9 +44,6 @@ const TeacherAttendanceRecord = () => {
         <View style={styles.navbarOptions}>
           <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <Text style={styles.navbarText}>Inicio</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.navbarText}>Opciones</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -103,20 +71,43 @@ const TeacherAttendanceRecord = () => {
           {/* Filas de datos */}
           {subjects.map((item, index) => (
             <View key={index} style={styles.tableRow}>
-              <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.day}</Text></View>
-              <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.subject}</Text></View>
-              <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
+              <View style={styles.centeredCell}>
+                <Text style={styles.tableCell}>{item.day}</Text>
+              </View>
+              <View style={styles.centeredCell}>
+                <Text style={styles.tableCell}>{item.subject}</Text>
+              </View>
+              <View style={styles.centeredCell}>
+                <TouchableOpacity onPress={() => openModal(item.subject)}>
                   <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => openCommentsModal(item.subject)}>
-                  <Image source={require('../assets/comentario.png')} style={styles.commentIcon} />
                 </TouchableOpacity>
               </View>
             </View>
           ))}
         </View>
       </ScrollView>
+
+      {/* Modal */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <View style={styles.circle}>
+              <Text style={styles.attendanceText}>
+                {studentsAttended}/{totalStudents}
+              </Text>
+            </View>
+            <Text style={styles.modalTitle}>Estudiantes asistentes</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Footer */}
       <View style={styles.footer}>
@@ -222,11 +213,6 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'center',
   },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   tableCell: {
     fontSize: 14,
     textAlign: 'center',
@@ -236,11 +222,47 @@ const styles = StyleSheet.create({
     height: 20,
     tintColor: '#333',
   },
-  commentIcon: {
-    width: 20,
-    height: 20,
-    tintColor: '#333',
-    marginLeft: 10,
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  circle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#FF6600',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  attendanceText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#FF6600',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   footer: {
     paddingVertical: 20,
