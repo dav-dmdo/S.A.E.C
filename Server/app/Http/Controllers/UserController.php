@@ -154,6 +154,21 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function currentUser(){
+        try {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();;
+
+            if (!$user) {
+                return response()->json(['error' => "Not found session"], 400);
+            }
+            
+            return response()->json($user->user_ci, 201);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 400);
+        }
+    }
+
     // ********** Protegida: SÓLO EL MISMO USUARIO **********
     public function update(Request $request, $user_ci)
     {

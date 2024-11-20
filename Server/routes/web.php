@@ -16,6 +16,7 @@ Route::post('api/user', [UserController::class, 'store']);
 Route::post('/api/user/login', [UserController::class, 'login']);
 Route::get('api/user/students', [UserController::class, 'students']);
 Route::get('api/user/teachers', [UserController::class, 'teachers']);
+Route::get('/api/user/current', [UserController::class, 'currentUser']);
 Route::get('api/user/{user_ci}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/api/user/logout', [UserController::class, 'logout']);
