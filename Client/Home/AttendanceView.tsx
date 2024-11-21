@@ -139,12 +139,14 @@ const AttendanceRecord = () => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.footerLink}>Inicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
-          <Text style={styles.footerLink}>Asistencias</Text>
-        </TouchableOpacity>
+        <View style={styles.footerIconsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
 
@@ -330,6 +332,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 10,
     textAlign: 'center',
+  },
+  footerIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
   },
   modalBackground: {
     flex: 1,

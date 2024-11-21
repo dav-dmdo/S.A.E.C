@@ -1,19 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, FlatList } from 'react-native';
+import { Text, View, Image, ScrollView, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App'; // Asegúrate de ajustar esta importación según tu proyecto
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'TeacherEvaluations'>;
 
 const TeacherEvaluations = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-  // Datos de materias y secciones
+  // Data for subjects
   const subjects = [
-    { subject: 'Matemática III', section: '1', average: 4.5, comments: ['Clase excelente.', 'Muy clara explicación.'] },
-    { subject: 'Estadística para Ing.', section: '2', average: 4.0, comments: ['Muy interesante.', 'Podría ser más interactiva.'] },
-    { subject: 'Base de Datos I', section: '3', average: 3.8, comments: ['Buena clase.', 'Faltaron ejemplos prácticos.'] },
+    {
+      subject: 'Matemática III',
+      section: '1',
+      average: 4.5,
+      comments: ['Clase excelente.', 'Muy clara explicación.'],
+    },
+    {
+      subject: 'Estadística para Ing.',
+      section: '2',
+      average: 4.0,
+      comments: ['Muy interesante.', 'Podría ser más interactiva.'],
+    },
+    {
+      subject: 'Base de Datos I',
+      section: '3',
+      average: 3.8,
+      comments: ['Buena clase.', 'Faltaron ejemplos prácticos.'],
+    },
   ];
 
-  // Manejo del modal
   const openModal = (subject: string, section: string) => {
     setSelectedSubject(subject);
     setSelectedSection(section);
@@ -34,7 +54,7 @@ const TeacherEvaluations = () => {
         <Text style={styles.headerTitle}>Evaluaciones Profesores</Text>
       </View>
 
-      {/* Tabla de materias */}
+      {/* Subjects Table */}
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderText}>Materia</Text>
@@ -53,39 +73,54 @@ const TeacherEvaluations = () => {
         ))}
       </ScrollView>
 
-      {/* Modal de información */}
+      {/* Modal */}
       <Modal visible={modalVisible} transparent={true} animationType="slide" onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>{selectedSubject}</Text>
             <Text style={styles.modalSubtitle}>Sección: {selectedSection}</Text>
 
-            {/* Promedio de evaluación */}
+            {/* Average Rating */}
             <View style={styles.ratingContainer}>
               <Text style={styles.ratingText}>Promedio de Evaluación: </Text>
-              <Text style={styles.average}>{subjects.find(item => item.subject === selectedSubject)?.average.toFixed(1)} / 5</Text>
+              <Text style={styles.average}>
+                {subjects.find((item) => item.subject === selectedSubject)?.average.toFixed(1)} / 5
+              </Text>
             </View>
 
-            {/* Comentarios */}
+            {/* Comments */}
             <Text style={styles.commentsTitle}>Comentarios Anónimos:</Text>
             <FlatList
-              data={subjects.find(item => item.subject === selectedSubject)?.comments}
+              data={subjects.find((item) => item.subject === selectedSubject)?.comments}
               keyExtractor={(comment, index) => index.toString()}
               renderItem={({ item }) => <Text style={styles.commentItem}>• {item}</Text>}
             />
 
-            {/* Botón para cerrar */}
+            {/* Close Button */}
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
               <Text style={styles.closeButtonText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <View style={styles.footerIconsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
+      </View>
     </View>
   );
 };
 
-// Estilos
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -108,6 +143,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   tableContainer: {
+    flex: 1,
     marginTop: 20,
     paddingHorizontal: 20,
   },
@@ -208,6 +244,26 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  footer: {
+    backgroundColor: '#3343a1',
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  footerIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
+  },
+  footerText: {
+    color: '#fff',
+    fontSize: 12,
+    textAlign: 'center',
   },
 });
 
