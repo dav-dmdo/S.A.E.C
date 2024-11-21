@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import axios from 'axios';
 import { RootStackParamList } from '../App';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceView'>;
@@ -13,21 +14,45 @@ const AttendanceRecord = () => {
   const [day, setDay] = useState<string>('');
   const [section, setSection] = useState<string>('');
   const [time, setTime] = useState<string>('');
-  const [rating, setRating] = useState<number>(3);
+  const [rating, setRating] = useState<number>(3); // Estado para el rating (1 a 5)
+  const [comment, setComment] = useState<string>(''); // Estado para el comentario
   const [attendedSubjects, setAttendedSubjects] = useState<Set<string>>(new Set()); // Set para materias con asistencia marcada
 
   const navigation = useNavigation<NavigationProp>();
 
+  // Función para enviar el comentario y rating a la API
+  const sendAttendanceData = async () => {
+    try {
+      const userCI = (await axios.get('http://18.209.15.163/api/user/current')).data; // Sustituye con el CI real del usuario logueado
+      console.log(userCI)
+      const response = await axios.put(`http://18.209.15.163/api/attendance/${userCI}`, {
+        attendance_comment: comment,
+        attendance_rating: rating,
+        id: 1,
+      });
+
+      if (response.status === 200) {
+        Alert.alert('Éxito', 'Comentario y calificación guardados correctamente.');
+        closeModal(); // Cierra el modal tras guardar exitosamente
+      } else {
+        Alert.alert('Error', 'Hubo un problema al guardar los datos.');
+      }
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
+    }
+  };
+
   const subjects = [
-    { day: "Mie.", subject: "Matemática III" },
-    { day: "Mie.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Ideas Emprendedoras" },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
+    { day: 'Mie.', subject: 'Matemática III' },
+    { day: 'Mie.', subject: 'Estadística para ing.' },
+    { day: 'Mar.', subject: 'Ideas Emprendedoras' },
+    { day: 'Mar.', subject: 'Base de Datos I' },
+    { day: 'Lun.', subject: 'Matemática I' },
+    { day: 'Lun.', subject: 'Estadística para ing.' },
+    { day: 'Mar.', subject: 'Base de Datos I' },
+    { day: 'Lun.', subject: 'Matemática I' },
+    { day: 'Lun.', subject: 'Estadística para ing.' },
   ];
 
   const randomSection = () => `BPTM${Math.floor(Math.random() * 100)}-0${Math.floor(Math.random() * 10)}`;
@@ -35,7 +60,7 @@ const AttendanceRecord = () => {
 
   const openModal = (subject: string, day: string) => {
     if (!attendedSubjects.has(subject)) {
-      Alert.alert("No estás asistente en esta clase", "Debe marcar su asistencia para poder calificar o comentar.");
+      Alert.alert('No estás asistente en esta clase', 'Debe marcar su asistencia para poder calificar o comentar.');
       return;
     }
     setSelectedSubject(subject);
@@ -50,12 +75,16 @@ const AttendanceRecord = () => {
     setAttendanceModalVisible(true);
   };
 
-  const closeModal = () => setModalVisible(false);
+  const closeModal = () => {
+    setModalVisible(false);
+    setComment(''); // Limpia el comentario
+    setRating(3); // Restaura el rating predeterminado
+  };
 
   const markAttendance = () => {
     setAttendedSubjects(prev => new Set(prev).add(selectedSubject));
     setAttendanceModalVisible(false);
-    Alert.alert("Asistencia marcada", `Usted ha sido marcado como asistente en ${selectedSubject}.`);
+    Alert.alert('Asistencia marcada', `Usted ha sido marcado como asistente en ${selectedSubject}.`);
   };
 
   return (
@@ -82,7 +111,9 @@ const AttendanceRecord = () => {
         {/* Filas de datos */}
         {subjects.map((item, index) => (
           <View key={index} style={styles.tableRow}>
-            <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.day}</Text></View>
+            <View style={styles.centeredCell}>
+              <Text style={styles.tableCell}>{item.day}</Text>
+            </View>
             <View style={styles.centeredCell}>
               <TouchableOpacity onPress={() => openAttendanceModal(item.subject)}>
                 <Text style={[styles.tableCell, styles.subjectText]}>{item.subject}</Text>
@@ -133,7 +164,7 @@ const AttendanceRecord = () => {
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Registro de asistencia</Text>
-            
+
             <View style={styles.modalSection}>
               <Text style={styles.modalLabel}>Materia</Text>
               <Text style={styles.modalValue}>{selectedSubject}</Text>
@@ -154,7 +185,7 @@ const AttendanceRecord = () => {
             <View style={styles.modalSection}>
               <Text style={styles.modalLabel}>Valoración</Text>
               <View style={styles.ratingContainer}>
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map(star => (
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
                     <Image
                       source={require('../assets/estrella.png')}
@@ -171,11 +202,13 @@ const AttendanceRecord = () => {
                 style={styles.textInput}
                 multiline
                 placeholder="Escribe tu comentario..."
+                value={comment}
+                onChangeText={setComment}
               />
             </View>
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.saveButton}>
+              <TouchableOpacity style={styles.saveButton} onPress={sendAttendanceData}>
                 <Text style={styles.buttonText}>Guardar</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
@@ -188,6 +221,7 @@ const AttendanceRecord = () => {
     </ScrollView>
   );
 };
+
 
 // Estilos
 const styles = StyleSheet.create({
