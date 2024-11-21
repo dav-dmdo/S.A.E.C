@@ -2,44 +2,78 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
 import axios from 'axios';
+import { RootStackParamList } from '../App';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Evaluations'>;
+
+const subjects = [
+  { id: 1, subject_name: 'Matemática III' },
+  { id: 27, subject_name: 'Estadística para Ing.' },
+  { id: 15, subject_name: 'Ideas Emprendedoras' },
+  { id: 28, subject_name: 'Base de Datos I' },
+  { id: 6, subject_name: 'Matemática I' },
+];
 
 const EvaluationsView = () => {
   const navigation = useNavigation<NavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [selectedSubject, setSelectedSubject] = useState<string>(''); // Nombre de la materia
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-  const [evaluations, setEvaluations] = useState<any[]>([]); // Inicialización segura como array vacío
+  const [evaluations, setEvaluations] = useState<any[]>([]); // Datos de las evaluaciones
 
+  // Obtener el CI del usuario actual
+  const getUserCI = async () => {
+    try {
+      const response = await axios.get('http://18.209.15.163/api/user/current');
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener CI del usuario:', error);
+      Alert.alert('Error', 'No se pudo obtener la información del usuario.');
+      return null;
+    }
+  };
+
+  // Obtener evaluaciones desde la API
   useEffect(() => {
     const fetchEvaluations = async () => {
+      const userCI = await getUserCI();
+      if (!userCI) return;
+
       try {
-        const response = await axios.get('http://18.209.15.163/api/attendance');
+        const response = await axios.get(`http://18.209.15.163/api/attendance/${userCI}`);
         const data = response.data;
 
         if (Array.isArray(data)) {
           setEvaluations(data);
         } else {
           console.error('La API no devolvió un array:', data);
-          setEvaluations([]); // Manejo seguro si no es un array
+          setEvaluations([]);
         }
       } catch (error) {
-        Alert.alert('Error', 'No se pudieron cargar las evaluaciones.');
         console.error('Error al obtener las evaluaciones:', error);
+        Alert.alert('Error', 'No se pudieron cargar las evaluaciones desde el servidor.');
       }
     };
 
     fetchEvaluations();
   }, []);
 
-  const openModal = (subject: string, rating: number, comment: string) => {
-    setSelectedSubject(subject);
-    setRating(rating);
-    setComment(comment);
+  // Abrir el modal con la información de la evaluación seleccionada
+  const openModal = (subjectId: number) => {
+    const evaluation = evaluations.find((evalItem) => evalItem.class_id === subjectId);
+    const subject = subjects.find((subj) => subj.id === subjectId);
+
+    if (evaluation) {
+      setSelectedSubject(subject?.subject_name || 'Materia Desconocida');
+      setRating(evaluation.attendance_rating);
+      setComment(evaluation.attendance_comment || 'Sin comentarios.');
+    } else {
+      setSelectedSubject(subject?.subject_name || 'Materia Desconocida');
+      setRating(0);
+      setComment('Clase no evaluada');
+    }
     setModalVisible(true);
   };
 
@@ -64,26 +98,22 @@ const EvaluationsView = () => {
 
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderText}>CLASES</Text>
-          <Text style={styles.tableHeaderText}>EVALUACIONES</Text>
+          <Text style={styles.tableHeaderText}>CLASE</Text>
+          <Text style={styles.tableHeaderText}>EVALUAR</Text>
         </View>
 
-        {evaluations.length > 0 ? (
-          evaluations.map((item: any, index: number) => (
-            <View key={index} style={styles.tableRow}>
-              <View style={styles.centeredCell}>
-                <Text style={styles.tableCell}>{item.subject}</Text>
-              </View>
-              <View style={styles.centeredCell}>
-                <TouchableOpacity onPress={() => openModal(item.subject, item.rating, item.comment)}>
-                  <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
-                </TouchableOpacity>
-              </View>
+        {subjects.map((subject, index) => (
+          <View key={index} style={styles.tableRow}>
+            <View style={styles.centeredCell}>
+              <Text style={styles.tableCell}>{subject.subject_name}</Text>
             </View>
-          ))
-        ) : (
-          <Text style={styles.noDataText}>No hay evaluaciones disponibles.</Text>
-        )}
+            <View style={styles.centeredCell}>
+              <TouchableOpacity onPress={() => openModal(subject.id)}>
+                <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
       </ScrollView>
 
       <View style={styles.footer}>

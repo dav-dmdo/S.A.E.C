@@ -8,7 +8,8 @@ import AttendanceView from './Home/AttendanceView';
 import TeacherAttendanceView from './profes/TeacherAttendanceView';
 import TeacherEvaluations from './profes/EvaluacionesProfe';
 import EvaluationsView from './Home/Evaluaciones';
-import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image, TouchableOpacity, View, Text, Modal, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
@@ -53,6 +54,17 @@ const App = () => {
     headerRight: () => <MenuButton onPress={() => setMenuVisible(true)} />,
     headerBackVisible: false,
   });
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('access_token');
+      Alert.alert('Sesión cerrada', 'Has cerrado sesión exitosamente.');
+      navigationRef.navigate('Login');
+    } catch (error) {
+      console.error('Error al eliminar el token:', error);
+      Alert.alert('Error', 'Hubo un problema al cerrar sesión.');
+    }
+  };
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -126,6 +138,14 @@ const App = () => {
                 <Text style={styles.menuOption}>Evaluaciones</Text>
               </TouchableOpacity>
             )}
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                handleLogout();
+              }}
+            >
+              <Text style={styles.menuClose}>Cerrar sesión</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setMenuVisible(false)}>
               <Text style={styles.menuClose}>Cerrar</Text>
             </TouchableOpacity>
