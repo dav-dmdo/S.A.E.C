@@ -126,6 +126,22 @@ const EvaluationsView = () => {
           </View>
         </View>
       </Modal>
+
+      {/* {footer} */}
+      <View style={styles.footer}>
+        <View style={styles.footerIconsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Evaluations')}>
+            <Image source={require('../assets/evaluacion.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
+      </View>
     </View>
   );
 };
@@ -138,7 +154,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3e64ff',
+    backgroundColor: '#3343a1',
     padding: 15,
   },
   headerIcon: {
@@ -210,7 +226,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     paddingVertical: 20,
-    backgroundColor: '#3e64ff',
+    backgroundColor: '#3343a1',
     alignItems: 'center',
     position: 'absolute',
     bottom: 0,
@@ -282,6 +298,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  footerIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
   },
 });
 

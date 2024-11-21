@@ -113,6 +113,9 @@ const TeacherEvaluations = () => {
           <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
             <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Evaluations')}>
+            <Image source={require('../assets/evaluacion.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
         </View>
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3343a1',
     padding: 15,
   },
   headerIcon: {
