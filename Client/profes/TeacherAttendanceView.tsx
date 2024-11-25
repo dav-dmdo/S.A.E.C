@@ -34,20 +34,6 @@ const TeacherAttendanceRecord = () => {
 
   return (
     <View style={styles.container}>
-      {/* Barra de navegación superior */}
-      <View style={styles.navbar}>
-        <Image
-          source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
-          style={styles.logo}
-        />
-        <Text style={styles.navbarTitle}>Registro de asistencias</Text>
-        <View style={styles.navbarOptions}>
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Text style={styles.navbarText}>Inicio</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Contenido principal */}
       <ScrollView>
         <View style={styles.header}>
@@ -111,12 +97,17 @@ const TeacherAttendanceRecord = () => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.footerLink}>Inicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
-          <Text style={styles.footerLink}>Asistencias</Text>
-        </TouchableOpacity>
+        <View style={styles.footerIconsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Evaluations')}>
+            <Image source={require('../assets/evaluacion.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
       </View>
     </View>
@@ -279,6 +270,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 10,
     textAlign: 'center',
+  },
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
+  },
+  footerIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
 });
 

@@ -68,7 +68,7 @@ const App = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Login"
           options={{ headerShown: false }}
@@ -111,44 +111,62 @@ const App = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.menuTitle}>Menú de Navegación</Text>
+            {/* Botón para cerrar */}
             <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                navigationRef.navigate('Home');
-              }}
+              style={styles.closeButton}
+              onPress={() => setMenuVisible(false)}
             >
-              <Text style={styles.menuOption}>Inicio</Text>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                navigationRef.navigate('AttendanceView');
-              }}
-            >
-              <Text style={styles.menuOption}>Asistencias</Text>
-            </TouchableOpacity>
-            {isTeacher && (
+
+            <Text style={styles.modalTitle}>Menú</Text>
+
+            {/* Opciones */}
+            <View style={styles.menuGrid}>
               <TouchableOpacity
+                style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  navigationRef.navigate('TeacherEvaluations');
+                  navigationRef.navigate('Home');
                 }}
               >
-                <Text style={styles.menuOption}>Evaluaciones</Text>
+                <Image source={require('./assets/House.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Inicio</Text>
               </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                handleLogout();
-              }}
-            >
-              <Text style={styles.menuClose}>Cerrar sesión</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setMenuVisible(false)}>
-              <Text style={styles.menuClose}>Cerrar</Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate('AttendanceView');
+                }}
+              >
+                <Image source={require('./assets/Assist.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Asistencias</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate('Evaluations');
+                }}
+              >
+                <Image source={require('./assets/evaluacion.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Evaluaciones</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  handleLogout();
+                }}
+              >
+                <Image source={require('./assets/logout.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Cerrar sesión</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -172,24 +190,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    width: '80%',
-    backgroundColor: 'white',
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 15,
     padding: 20,
-    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5,
+    position: 'relative',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#ff5c5c',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  menuTitle: {
+  closeButtonText: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
   },
-  menuOption: {
-    fontSize: 16,
-    paddingVertical: 10,
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#3343a1',
+    marginBottom: 20,
   },
-  menuClose: {
-    fontSize: 16,
-    color: 'red',
-    marginTop: 20,
+  menuGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  menuItem: {
+    width: '40%',
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  menuIcon: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
+  },
+  menuText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#3343a1',
+    textAlign: 'center',
   },
 });

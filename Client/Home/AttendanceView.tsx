@@ -5,35 +5,73 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import axios from 'axios';
 import { RootStackParamList } from '../App';
 
+// Definir el tipo para navegación
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceView'>;
 
 const AttendanceRecord = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<string>('');
-  const [day, setDay] = useState<string>('');
-  const [section, setSection] = useState<string>('');
-  const [time, setTime] = useState<string>('');
-  const [rating, setRating] = useState<number>(3); // Estado para el rating (1 a 5)
-  const [comment, setComment] = useState<string>(''); // Estado para el comentario
-  const [attendedSubjects, setAttendedSubjects] = useState<Set<string>>(new Set()); // Set para materias con asistencia marcada
+  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
+  const [selectedSubject, setSelectedSubject] = useState<string>(''); // Nombre de la materia seleccionada
+  const [rating, setRating] = useState<number>(3); // Calificación seleccionada
+  const [comment, setComment] = useState<string>(''); // Comentario del usuario
 
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NavigationProp>(); // Navegación entre pantallas
 
-  // Función para enviar el comentario y rating a la API
+  // Mapeo manual de IDs basado en el nombre de la materia
+  const getSubjectId = (subjectName: string): number | null => {
+    switch (subjectName) {
+      case 'Matemática III':
+        return 16;
+      case 'Estadística para Ing.':
+        return 27;
+      case 'Ideas Emprendedoras':
+        return 15;
+      case 'Base de Datos I':
+        return 28;
+      case 'Matemática I':
+        return 6;
+      default:
+        return null; // Retorna null si no se encuentra el nombre
+    }
+  };
+
+  // Función para abrir el modal de evaluación
+  const openModal = (subjectName: string) => {
+    const subjectId = getSubjectId(subjectName); // Obtener el ID manualmente
+    if (!subjectId) {
+      Alert.alert('Error', 'No se pudo encontrar el ID de la materia seleccionada.');
+      return;
+    }
+
+    setSelectedSubject(subjectName); // Asignar el nombre de la materia seleccionada
+    setModalVisible(true); // Mostrar el modal
+  };
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setModalVisible(false);
+    setComment(''); // Limpiar comentario
+    setRating(3); // Resetear calificación
+  };
+
+  // Función para enviar los datos de evaluación a la API
   const sendAttendanceData = async () => {
+    const subjectId = getSubjectId(selectedSubject); // Obtener el ID manualmente
+    if (!subjectId) {
+      Alert.alert('Error', 'No se pudo determinar el ID de la materia seleccionada.');
+      return;
+    }
+
     try {
-      const userCI = (await axios.get('http://18.209.15.163/api/user/current')).data; // Sustituye con el CI real del usuario logueado
-      console.log(userCI)
+      const userCI = (await axios.get('http://18.209.15.163/api/user/current')).data; // Obtener el CI del usuario logueado
       const response = await axios.put(`http://18.209.15.163/api/attendance/${userCI}`, {
-        attendance_comment: comment,
-        attendance_rating: rating,
-        id: 1,
+        attendance_comment: comment, // Comentario
+        attendance_rating: rating, // Calificación
+        id: subjectId, // Enviar el ID manual configurado
       });
 
       if (response.status === 200) {
         Alert.alert('Éxito', 'Comentario y calificación guardados correctamente.');
-        closeModal(); // Cierra el modal tras guardar exitosamente
+        closeModal(); // Cerrar el modal
       } else {
         Alert.alert('Error', 'Hubo un problema al guardar los datos.');
       }
@@ -41,50 +79,6 @@ const AttendanceRecord = () => {
       console.error('Error al enviar los datos:', error);
       Alert.alert('Error', 'No se pudo conectar con el servidor.');
     }
-  };
-
-  const subjects = [
-    { day: 'Mie.', subject: 'Matemática III' },
-    { day: 'Mie.', subject: 'Estadística para ing.' },
-    { day: 'Mar.', subject: 'Ideas Emprendedoras' },
-    { day: 'Mar.', subject: 'Base de Datos I' },
-    { day: 'Lun.', subject: 'Matemática I' },
-    { day: 'Lun.', subject: 'Estadística para ing.' },
-    { day: 'Mar.', subject: 'Base de Datos I' },
-    { day: 'Lun.', subject: 'Matemática I' },
-    { day: 'Lun.', subject: 'Estadística para ing.' },
-  ];
-
-  const randomSection = () => `BPTM${Math.floor(Math.random() * 100)}-0${Math.floor(Math.random() * 10)}`;
-  const randomTime = () => `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}AM`;
-
-  const openModal = (subject: string, day: string) => {
-    if (!attendedSubjects.has(subject)) {
-      Alert.alert('No estás asistente en esta clase', 'Debe marcar su asistencia para poder calificar o comentar.');
-      return;
-    }
-    setSelectedSubject(subject);
-    setDay(day);
-    setSection(randomSection());
-    setTime(randomTime());
-    setModalVisible(true);
-  };
-
-  const openAttendanceModal = (subject: string) => {
-    setSelectedSubject(subject);
-    setAttendanceModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-    setComment(''); // Limpia el comentario
-    setRating(3); // Restaura el rating predeterminado
-  };
-
-  const markAttendance = () => {
-    setAttendedSubjects(prev => new Set(prev).add(selectedSubject));
-    setAttendanceModalVisible(false);
-    Alert.alert('Asistencia marcada', `Usted ha sido marcado como asistente en ${selectedSubject}.`);
   };
 
   return (
@@ -95,32 +89,36 @@ const AttendanceRecord = () => {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerTitle}>Registro de asistencias</Text>
           <Text style={styles.headerSubtitle}>
-            El registro está organizado para que se presente la última clase a la que asistió.
+            Aquí puedes evaluar tus clases y enviar comentarios.
           </Text>
         </View>
       </View>
 
-      {/* Tabla de registros */}
+      {/* Tabla de materias */}
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderText}>DÍA</Text>
           <Text style={styles.tableHeaderText}>MATERIA</Text>
-          <Text style={styles.tableHeaderText}>INFO</Text>
+          <Text style={styles.tableHeaderText}>EVALUAR</Text>
         </View>
 
-        {/* Filas de datos */}
-        {subjects.map((item, index) => (
-          <View key={index} style={styles.tableRow}>
+        {/* Mostrar materias con botones de acción */}
+        {[
+          { day: 'Mié.', name: 'Matemática III' },
+          { day: 'Mié.', name: 'Estadística para Ing.' },
+          { day: 'Mar.', name: 'Ideas Emprendedoras' },
+          { day: 'Mar.', name: 'Base de Datos I' },
+          { day: 'Lun.', name: 'Matemática I' },
+        ].map(({ day, name }) => (
+          <View key={name} style={styles.tableRow}>
             <View style={styles.centeredCell}>
-              <Text style={styles.tableCell}>{item.day}</Text>
+              <Text style={styles.tableCell}>{day}</Text>
             </View>
             <View style={styles.centeredCell}>
-              <TouchableOpacity onPress={() => openAttendanceModal(item.subject)}>
-                <Text style={[styles.tableCell, styles.subjectText]}>{item.subject}</Text>
-              </TouchableOpacity>
+              <Text style={styles.tableCell}>{name}</Text>
             </View>
             <View style={styles.centeredCell}>
-              <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
+              <TouchableOpacity onPress={() => openModal(name)}>
                 <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
               </TouchableOpacity>
             </View>
@@ -128,66 +126,19 @@ const AttendanceRecord = () => {
         ))}
       </View>
 
-      {/* Paginación */}
-      <View style={styles.paginationContainer}>
-        {Array.from({ length: 10 }, (_, i) => (
-          <TouchableOpacity key={i} style={styles.pageButton}>
-            <Text style={styles.pageButtonText}>{i + 1}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <View style={styles.footerIconsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
-            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
-      </View>
-
-      {/* Modal para marcar asistencia */}
-      <Modal visible={attendanceModalVisible} animationType="slide" transparent={true} onRequestClose={() => setAttendanceModalVisible(false)}>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={markAttendance}>
-              <Text style={styles.buttonText}>Marcar como Asistente</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Modal para calificación y comentario */}
+      {/* Modal de evaluación */}
       <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Registro de asistencia</Text>
-
+            <Text style={styles.modalTitle}>Evaluar Materia</Text>
             <View style={styles.modalSection}>
               <Text style={styles.modalLabel}>Materia</Text>
               <Text style={styles.modalValue}>{selectedSubject}</Text>
             </View>
             <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Día</Text>
-              <Text style={styles.modalValue}>{day}</Text>
-            </View>
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Sección</Text>
-              <Text style={styles.modalValue}>{section}</Text>
-            </View>
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Hora</Text>
-              <Text style={styles.modalValue}>{time}</Text>
-            </View>
-
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Valoración</Text>
+              <Text style={styles.modalLabel}>Calificación</Text>
               <View style={styles.ratingContainer}>
-                {[1, 2, 3, 4, 5].map(star => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
                     <Image
                       source={require('../assets/estrella.png')}
@@ -197,9 +148,8 @@ const AttendanceRecord = () => {
                 ))}
               </View>
             </View>
-
             <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Comentario anónimo</Text>
+              <Text style={styles.modalLabel}>Comentario</Text>
               <TextInput
                 style={styles.textInput}
                 multiline
@@ -208,7 +158,6 @@ const AttendanceRecord = () => {
                 onChangeText={setComment}
               />
             </View>
-
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.saveButton} onPress={sendAttendanceData}>
                 <Text style={styles.buttonText}>Guardar</Text>
@@ -224,199 +173,33 @@ const AttendanceRecord = () => {
   );
 };
 
-
-// Estilos
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#3343a1',
-    padding: 15,
-  },
-  headerIcon: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-  headerTextContainer: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#f0f0f0',
-    marginTop: 5,
-  },
-  tableContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    backgroundColor: '#f1f1f1',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  tableHeaderText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    width: '30%',
-    textAlign: 'center',
-  },
-  tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#f8f8f8',
-    marginVertical: 2,
-    borderRadius: 5,
-  },
-  centeredCell: {
-    width: '30%',
-    alignItems: 'center',
-  },
-  tableCell: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  subjectText: {
-    color: '#000',
-    textDecorationLine: 'underline',
-  },
-  infoIcon: {
-    width: 20,
-    height: 20,
-    tintColor: '#333',
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  pageButton: {
-    padding: 10,
-    marginHorizontal: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
-  pageButtonText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  footer: {
-    paddingVertical: 20,
-    backgroundColor: '#3343a1',
-    alignItems: 'center',
-  },
-  footerLink: {
-    color: '#fff',
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  footerText: {
-    color: '#fff',
-    fontSize: 12,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  footerIconsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  footerIcon: {
-    width: 40,
-    height: 40,
-    marginHorizontal: 10,
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: '85%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  modalSection: {
-    marginBottom: 10,
-  },
-  modalLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#555',
-  },
-  modalValue: {
-    fontSize: 14,
-    color: '#007BFF',
-    marginBottom: 5,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    marginTop: 5,
-  },
-  starIcon: {
-    width: 24,
-    height: 24,
-    marginHorizontal: 2,
-  },
-  textInput: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 14,
-    marginTop: 5,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-    flex: 0.48,
-  },
-  closeButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    flex: 0.48,
-  },
-  buttonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#f9f9f9' },
+  header: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#3343a1', padding: 15 },
+  headerIcon: { width: 40, height: 40, marginRight: 10 },
+  headerTextContainer: { flex: 1 },
+  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  headerSubtitle: { fontSize: 14, color: '#f0f0f0', marginTop: 5 },
+  tableContainer: { marginTop: 20, paddingHorizontal: 20 },
+  tableHeader: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 10, backgroundColor: '#f1f1f1', borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#ddd' },
+  tableHeaderText: { fontSize: 14, fontWeight: 'bold', width: '30%', textAlign: 'center' },
+  tableRow: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#ddd', backgroundColor: '#f8f8f8', marginVertical: 2, borderRadius: 5 },
+  centeredCell: { width: '30%', alignItems: 'center' },
+  tableCell: { fontSize: 14, textAlign: 'center' },
+  infoIcon: { width: 20, height: 20, tintColor: '#333' },
+  modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  modalContainer: { width: '85%', backgroundColor: '#fff', borderRadius: 10, padding: 20 },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
+  modalSection: { marginBottom: 10 },
+  modalLabel: { fontSize: 14, fontWeight: 'bold', color: '#555' },
+  modalValue: { fontSize: 14, color: '#007BFF', marginBottom: 5 },
+  ratingContainer: { flexDirection: 'row', marginTop: 5 },
+  starIcon: { width: 24, height: 24, marginHorizontal: 2 },
+  textInput: { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, padding: 10, fontSize: 14, marginTop: 5 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  saveButton: { backgroundColor: '#4CAF50', padding: 10, borderRadius: 5, flex: 0.48 },
+  closeButton: { backgroundColor: '#f0f0f0', padding: 10, borderRadius: 5, flex: 0.48 },
+  buttonText: { textAlign: 'center', fontWeight: 'bold' },
 });
 
 export default AttendanceRecord;
