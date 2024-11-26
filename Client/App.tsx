@@ -5,18 +5,20 @@ import LoginScreen from './LoginScreen';
 import Home from './Home';
 import RegisterScreen from './RegisterScreen';
 import AttendanceView from './Home/AttendanceView';
-import TeacherAttendanceView from './profes/TeacherAttendanceView';
+import TeacherAttendanceView from './profes/TeacherAttendanceView'; // Asegúrate de que esta ruta sea correcta
 import TeacherEvaluations from './profes/EvaluacionesProfe';
 import EvaluationsView from './Home/Evaluaciones';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image, TouchableOpacity, View, Text, Modal, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
+// **Define RootStackParamList**
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
   AttendanceView: undefined;
+  TeacherAttendanceView: undefined; // Agregada correctamente
   Evaluations: undefined;
   TeacherEvaluations: undefined;
 };
@@ -69,37 +71,32 @@ const App = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
-          name="Login"
-          options={{ headerShown: false }}
-        >
+        <Stack.Screen name="Login" options={{ headerShown: false }}>
           {props => <LoginScreen {...props} setIsTeacher={setIsTeacher} />}
         </Stack.Screen>
-        <Stack.Screen
-          name="Home"
-          options={commonHeaderOptions('Inicio')}
-        >
+        <Stack.Screen name="Home" options={commonHeaderOptions('Inicio')}>
           {props => <Home {...props} isTeacher={isTeacher} />}
         </Stack.Screen>
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="AttendanceView"
           component={isTeacher ? TeacherAttendanceView : AttendanceView}
-          options={commonHeaderOptions('Evaluacion')}
+          options={commonHeaderOptions('Asistencias')}
         />
         <Stack.Screen
           name="Evaluations"
-          component={EvaluationsView}
-          options={commonHeaderOptions('Historial')}
+          component={isTeacher ? TeacherEvaluations : EvaluationsView}
+          options={commonHeaderOptions('Evaluaciones')}
         />
         <Stack.Screen
           name="TeacherEvaluations"
           component={TeacherEvaluations}
           options={commonHeaderOptions('Evaluaciones Profesores')}
+        />
+        <Stack.Screen
+          name="TeacherAttendanceView"
+          component={TeacherAttendanceView} // Registro explícito para asegurar su acceso
+          options={commonHeaderOptions('Asistencias Profesores')}
         />
       </Stack.Navigator>
 
@@ -112,10 +109,7 @@ const App = () => {
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             {/* Botón para cerrar */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setMenuVisible(false)}
-            >
+            <TouchableOpacity style={styles.closeButton} onPress={() => setMenuVisible(false)}>
               <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
 
@@ -138,7 +132,7 @@ const App = () => {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  navigationRef.navigate('AttendanceView');
+                  navigationRef.navigate(isTeacher ? 'TeacherAttendanceView' : 'AttendanceView');
                 }}
               >
                 <Image source={require('./assets/Assist.png')} style={styles.menuIcon} />
@@ -149,7 +143,7 @@ const App = () => {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  navigationRef.navigate('Evaluations');
+                  navigationRef.navigate(isTeacher ? 'TeacherEvaluations' : 'Evaluations');
                 }}
               >
                 <Image source={require('./assets/evaluacion.png')} style={styles.menuIcon} />
