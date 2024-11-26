@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 6,
     marginTop: 10,
     textAlign: 'center',
   },
@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginHorizontal: 10,
+    tintColor: "#fff"
   },
   footerIconsContainer: {
     flexDirection: 'row',

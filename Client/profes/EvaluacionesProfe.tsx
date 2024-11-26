@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
   closeButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   footer: { backgroundColor: '#3343a1', paddingVertical: 20, alignItems: 'center' },
   footerIconsContainer: { flexDirection: 'row', justifyContent: 'center', marginBottom: 10 },
-  footerIcon: { width: 40, height: 40, marginHorizontal: 10 },
-  footerText: { color: '#fff', fontSize: 12, textAlign: 'center' },
+  footerIcon: { width: 40, height: 40, marginHorizontal: 10, tintColor: "#fff" },
+  footerText: { color: '#fff', fontSize: 6, textAlign: 'center' },
 });
 
 export default TeacherEvaluations;

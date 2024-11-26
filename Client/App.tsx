@@ -68,7 +68,7 @@ const App = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Login"
           options={{ headerShown: false }}
@@ -89,12 +89,12 @@ const App = () => {
         <Stack.Screen
           name="AttendanceView"
           component={isTeacher ? TeacherAttendanceView : AttendanceView}
-          options={commonHeaderOptions('Asistencias')}
+          options={commonHeaderOptions('Evaluacion')}
         />
         <Stack.Screen
           name="Evaluations"
           component={EvaluationsView}
-          options={commonHeaderOptions('Evaluaciones')}
+          options={commonHeaderOptions('Historial')}
         />
         <Stack.Screen
           name="TeacherEvaluations"

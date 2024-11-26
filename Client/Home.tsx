@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,7 +24,10 @@ const Home: React.FC<HomeProps> = ({ isTeacher }) => {
 
         {/* Sección de estadísticas con cuadros centrados */}
         <View style={styles.gridContainer}>
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#fcd46e' }]}>
+        <TouchableOpacity
+            style={[styles.gridItem, { backgroundColor: '#fcd46e' }]}
+            onPress={() => Alert.alert('Próximamente', 'Esta funcionalidad estará disponible en el futuro.')}
+          >
             <Image 
               source={require('./assets/estudiante.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
@@ -33,7 +36,10 @@ const Home: React.FC<HomeProps> = ({ isTeacher }) => {
             <Text style={styles.gridCount}>1328</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#f4a1a1' }]}>
+          <TouchableOpacity
+            style={[styles.gridItem, { backgroundColor: '#f4a1a1' }]}
+            onPress={() => Alert.alert('Próximamente', 'Esta funcionalidad estará disponible en el futuro.')}
+          >
             <Image 
               source={require('./assets/profesor.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
@@ -42,7 +48,10 @@ const Home: React.FC<HomeProps> = ({ isTeacher }) => {
             <Text style={styles.gridCount}>145</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#9fe79d' }]}>
+          <TouchableOpacity
+            style={[styles.gridItem, { backgroundColor: '#9fe79d' }]}
+            onPress={() => Alert.alert('Próximamente', 'Esta funcionalidad estará disponible en el futuro.')}
+          >
             <Image 
               source={require('./assets/materia.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
@@ -59,11 +68,14 @@ const Home: React.FC<HomeProps> = ({ isTeacher }) => {
               source={require('./assets/asistencia.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
             />
-            <Text style={styles.gridTitle}>ASISTENCIAS</Text>
+            <Text style={styles.gridTitle}>EVALUACION</Text>
             <Text style={styles.gridCount}>27</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.gridItem, { backgroundColor: '#c0c2f4' }]}>
+          <TouchableOpacity
+            style={[styles.gridItem, { backgroundColor: '#c0c2f4' }]}
+            onPress={() => Alert.alert('Próximamente', 'Esta funcionalidad estará disponible en el futuro.')}
+          >
             <Image 
               source={require('./assets/comentario.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
@@ -87,7 +99,7 @@ const Home: React.FC<HomeProps> = ({ isTeacher }) => {
               source={require('./assets/evaluacion.png')} 
               style={[styles.gridImage, { tintColor: '#FFFFFF' }]}
             />
-            <Text style={styles.gridTitle}>EVALUACIÓN</Text>
+            <Text style={styles.gridTitle}>HISTORIAL</Text>
             <Text style={styles.gridCount}>24</Text>
           </TouchableOpacity>
         </View>
