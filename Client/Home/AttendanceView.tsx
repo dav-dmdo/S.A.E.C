@@ -2,94 +2,112 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Modal, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import axios from 'axios';
 import { RootStackParamList } from '../App';
 
+// Definir el tipo para navegación
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'AttendanceView'>;
 
 const AttendanceRecord = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [attendanceModalVisible, setAttendanceModalVisible] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>('');
-  const [day, setDay] = useState<string>('');
-  const [section, setSection] = useState<string>('');
-  const [time, setTime] = useState<string>('');
   const [rating, setRating] = useState<number>(3);
-  const [attendedSubjects, setAttendedSubjects] = useState<Set<string>>(new Set()); // Set para materias con asistencia marcada
+  const [comment, setComment] = useState<string>('');
 
   const navigation = useNavigation<NavigationProp>();
 
-  const subjects = [
-    { day: "Mie.", subject: "Matemática III" },
-    { day: "Mie.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Ideas Emprendedoras" },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
-    { day: "Mar.", subject: "Base de Datos I" },
-    { day: "Lun.", subject: "Matemática I" },
-    { day: "Lun.", subject: "Estadística para ing." },
-  ];
+  const getSubjectId = (subjectName: string): number | null => {
+    switch (subjectName) {
+      case 'Matemática III':
+        return 16;
+      case 'Estadística para Ing.':
+        return 27;
+      case 'Ideas Emprendedoras':
+        return 15;
+      case 'Base de Datos I':
+        return 28;
+      case 'Matemática I':
+        return 6;
+      default:
+        return null;
+    }
+  };
 
-  const randomSection = () => `BPTM${Math.floor(Math.random() * 100)}-0${Math.floor(Math.random() * 10)}`;
-  const randomTime = () => `${Math.floor(Math.random() * 12) + 1}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}AM`;
-
-  const openModal = (subject: string, day: string) => {
-    if (!attendedSubjects.has(subject)) {
-      Alert.alert("No estás asistente en esta clase", "Debe marcar su asistencia para poder calificar o comentar.");
+  const openModal = (subjectName: string) => {
+    const subjectId = getSubjectId(subjectName);
+    if (!subjectId) {
+      Alert.alert('Error', 'No se pudo encontrar el ID de la materia seleccionada.');
       return;
     }
-    setSelectedSubject(subject);
-    setDay(day);
-    setSection(randomSection());
-    setTime(randomTime());
+    setSelectedSubject(subjectName);
     setModalVisible(true);
   };
 
-  const openAttendanceModal = (subject: string) => {
-    setSelectedSubject(subject);
-    setAttendanceModalVisible(true);
+  const closeModal = () => {
+    setModalVisible(false);
+    setComment('');
+    setRating(3);
   };
 
-  const closeModal = () => setModalVisible(false);
+  const sendAttendanceData = async () => {
+    const subjectId = getSubjectId(selectedSubject);
+    if (!subjectId) {
+      Alert.alert('Error', 'No se pudo determinar el ID de la materia seleccionada.');
+      return;
+    }
+    try {
+      const userCI = (await axios.get('http://18.209.15.163/api/user/current')).data;
+      const response = await axios.put(`http://18.209.15.163/api/attendance/${userCI}`, {
+        attendance_comment: comment,
+        attendance_rating: rating,
+        id: subjectId,
+      });
 
-  const markAttendance = () => {
-    setAttendedSubjects(prev => new Set(prev).add(selectedSubject));
-    setAttendanceModalVisible(false);
-    Alert.alert("Asistencia marcada", `Usted ha sido marcado como asistente en ${selectedSubject}.`);
+      if (response.status === 200) {
+        Alert.alert('Éxito', 'Comentario y calificación guardados correctamente.');
+        closeModal();
+      } else {
+        Alert.alert('Error', 'Hubo un problema al guardar los datos.');
+      }
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Image source={require('../assets/carpeta.png')} style={[styles.headerIcon, { tintColor: '#FFFFFF' }]} />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>Registro de asistencias</Text>
-          <Text style={styles.headerSubtitle}>
-            El registro está organizado para que se presente la última clase a la que asistió.
-          </Text>
+          <Text style={styles.headerTitle}>Registro de asistencias y evaluacion </Text>
+          <Text style={styles.headerSubtitle}>Aquí puedes evaluar tus clases y enviar comentarios.</Text>
         </View>
       </View>
 
-      {/* Tabla de registros */}
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderText}>DÍA</Text>
           <Text style={styles.tableHeaderText}>MATERIA</Text>
-          <Text style={styles.tableHeaderText}>INFO</Text>
+          <Text style={styles.tableHeaderText}>EVALUAR</Text>
         </View>
 
-        {/* Filas de datos */}
-        {subjects.map((item, index) => (
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.centeredCell}><Text style={styles.tableCell}>{item.day}</Text></View>
+        {[
+          { day: 'Mié.', name: 'Matemática III' },
+          { day: 'Mié.', name: 'Estadística para Ing.' },
+          { day: 'Mar.', name: 'Ideas Emprendedoras' },
+          { day: 'Mar.', name: 'Base de Datos I' },
+          { day: 'Lun.', name: 'Matemática I' },
+        ].map(({ day, name }) => (
+          <View key={name} style={styles.tableRow}>
             <View style={styles.centeredCell}>
-              <TouchableOpacity onPress={() => openAttendanceModal(item.subject)}>
-                <Text style={[styles.tableCell, styles.subjectText]}>{item.subject}</Text>
-              </TouchableOpacity>
+              <Text style={styles.tableCell}>{day}</Text>
             </View>
             <View style={styles.centeredCell}>
-              <TouchableOpacity onPress={() => openModal(item.subject, item.day)}>
+              <Text style={styles.tableCell}>{name}</Text>
+            </View>
+            <View style={styles.centeredCell}>
+              <TouchableOpacity onPress={() => openModal(name)}>
                 <Image source={require('../assets/ojo.png')} style={styles.infoIcon} />
               </TouchableOpacity>
             </View>
@@ -97,62 +115,16 @@ const AttendanceRecord = () => {
         ))}
       </View>
 
-      {/* Paginación */}
-      <View style={styles.paginationContainer}>
-        {Array.from({ length: 10 }, (_, i) => (
-          <TouchableOpacity key={i} style={styles.pageButton}>
-            <Text style={styles.pageButtonText}>{i + 1}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.footerLink}>Inicio</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
-          <Text style={styles.footerLink}>Asistencias</Text>
-        </TouchableOpacity>
-        <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
-      </View>
-
-      {/* Modal para marcar asistencia */}
-      <Modal visible={attendanceModalVisible} animationType="slide" transparent={true} onRequestClose={() => setAttendanceModalVisible(false)}>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={markAttendance}>
-              <Text style={styles.buttonText}>Marcar como Asistente</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Modal para calificación y comentario */}
       <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Registro de asistencia</Text>
-            
+            <Text style={styles.modalTitle}>Evaluar Materia</Text>
             <View style={styles.modalSection}>
               <Text style={styles.modalLabel}>Materia</Text>
               <Text style={styles.modalValue}>{selectedSubject}</Text>
             </View>
             <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Día</Text>
-              <Text style={styles.modalValue}>{day}</Text>
-            </View>
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Sección</Text>
-              <Text style={styles.modalValue}>{section}</Text>
-            </View>
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Hora</Text>
-              <Text style={styles.modalValue}>{time}</Text>
-            </View>
-
-            <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Valoración</Text>
+              <Text style={styles.modalLabel}>Calificación</Text>
               <View style={styles.ratingContainer}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
@@ -164,18 +136,18 @@ const AttendanceRecord = () => {
                 ))}
               </View>
             </View>
-
             <View style={styles.modalSection}>
-              <Text style={styles.modalLabel}>Comentario anónimo</Text>
+              <Text style={styles.modalLabel}>Comentario</Text>
               <TextInput
                 style={styles.textInput}
                 multiline
                 placeholder="Escribe tu comentario..."
+                value={comment}
+                onChangeText={setComment}
               />
             </View>
-
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.saveButton}>
+              <TouchableOpacity style={styles.saveButton} onPress={sendAttendanceData}>
                 <Text style={styles.buttonText}>Guardar</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
@@ -185,11 +157,26 @@ const AttendanceRecord = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <View style={styles.footerIconsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <Image source={require('../assets/House.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AttendanceView')}>
+            <Image source={require('../assets/Assist.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Evaluations')}>
+            <Image source={require('../assets/evaluacion.png')} style={styles.footerIcon} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.footerText}>Universidad Metropolitana de Caracas. Todos los derechos reservados.</Text>
+      </View>
     </ScrollView>
   );
 };
 
-// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -257,45 +244,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  subjectText: {
-    color: '#000',
-    textDecorationLine: 'underline',
-  },
   infoIcon: {
     width: 20,
     height: 20,
     tintColor: '#333',
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  pageButton: {
-    padding: 10,
-    marginHorizontal: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
-  pageButtonText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  footer: {
-    paddingVertical: 20,
-    backgroundColor: '#3343a1',
-    alignItems: 'center',
-  },
-  footerLink: {
-    color: '#fff',
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  footerText: {
-    color: '#fff',
-    fontSize: 12,
-    marginTop: 10,
-    textAlign: 'center',
   },
   modalBackground: {
     flex: 1,
@@ -314,11 +266,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
   },
   modalSection: {
     marginBottom: 10,
@@ -370,6 +317,35 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  footer: {
+    backgroundColor: '#3343a1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 25,
+    marginTop: 235,
+  },
+  footerIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  footerLink: {
+    color: '#fff',
+    marginBottom: 10,
+    fontSize: 14,
+  },
+  footerIcon: {
+    width: 40,
+    height: 40,
+    marginHorizontal: 10,
+    tintColor: "#fff"
+  },
+  footerText: {
+    color: '#fff',
+    marginTop: 15,
+    fontSize: 6,
+    textAlign: 'center',
   },
 });
 

@@ -1,34 +1,37 @@
 import React, { useState } from 'react';
-import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import Home from './Home';
 import RegisterScreen from './RegisterScreen';
 import AttendanceView from './Home/AttendanceView';
-import { Image, TouchableOpacity, View, Text, Modal, StyleSheet } from 'react-native';
+import TeacherAttendanceView from './profes/TeacherAttendanceView'; // Asegúrate de que esta ruta sea correcta
+import TeacherEvaluations from './profes/EvaluacionesProfe';
+import EvaluationsView from './Home/Evaluaciones';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image, TouchableOpacity, View, Text, Modal, StyleSheet, Alert } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
-// Definir el tipo RootStackParamList
+// **Define RootStackParamList**
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
   AttendanceView: undefined;
+  TeacherAttendanceView: undefined; // Agregada correctamente
+  Evaluations: undefined;
+  TeacherEvaluations: undefined;
 };
 
-// Crear la pila de navegación con el tipo RootStackParamList
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Crear y tipar el objeto navigationRef
 import { createNavigationContainerRef } from '@react-navigation/native';
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
-// Tipado para el botón de menú
 interface MenuButtonProps {
   onPress: () => void;
 }
 
-// Componente para el botón de menú
 const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
   <TouchableOpacity style={{ padding: 10 }} onPress={onPress}>
     <View style={styles.menuBar} />
@@ -39,49 +42,64 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => (
 
 const App = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false);
 
-  // Función para opciones de encabezado comunes
   const commonHeaderOptions = (title: string): NativeStackNavigationOptions => ({
     title,
-    headerTitleAlign: 'center', // Centrar el título
+    headerTitleAlign: 'center',
     headerLeft: () => (
       <Image
         source={{ uri: 'https://www.unimet.edu.ve/wp-content/uploads/2023/07/Logo-footer.png' }}
         style={{ width: 100, height: 40, resizeMode: 'contain', marginLeft: 10 }}
       />
     ),
-    headerRight: () => (
-      <MenuButton onPress={() => setMenuVisible(true)} />
-    ),
-    headerBackVisible: false, // Desactiva el botón "back" si no se necesita
+    headerRight: () => <MenuButton onPress={() => setMenuVisible(true)} />,
+    headerBackVisible: false,
   });
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('access_token');
+      Alert.alert('Sesión cerrada', 'Has cerrado sesión exitosamente.');
+      navigationRef.navigate('Login');
+    } catch (error) {
+      console.error('Error al eliminar el token:', error);
+      Alert.alert('Error', 'Hubo un problema al cerrar sesión.');
+    }
+  };
 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} // Ocultar el header en la pantalla de login
+        <Stack.Screen name="Login" options={{ headerShown: false }}>
+          {props => <LoginScreen {...props} setIsTeacher={setIsTeacher} />}
+        </Stack.Screen>
+        <Stack.Screen name="Home" options={commonHeaderOptions('Inicio')}>
+          {props => <Home {...props} isTeacher={isTeacher} />}
+        </Stack.Screen>
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="AttendanceView"
+          component={isTeacher ? TeacherAttendanceView : AttendanceView}
+          options={commonHeaderOptions('Asistencias')}
         />
-        <Stack.Screen 
-          name="Home" 
-          component={Home} 
-          options={commonHeaderOptions('Inicio')} // Opciones de header para Home
+        <Stack.Screen
+          name="Evaluations"
+          component={isTeacher ? TeacherEvaluations : EvaluationsView}
+          options={commonHeaderOptions('Evaluaciones')}
         />
-        <Stack.Screen 
-          name="Register" 
-          component={RegisterScreen} 
-          options={{ headerShown: false }} // Ocultar el header en RegisterScreen
+        <Stack.Screen
+          name="TeacherEvaluations"
+          component={TeacherEvaluations}
+          options={commonHeaderOptions('Evaluaciones Profesores')}
         />
-        <Stack.Screen 
-          name="AttendanceView" 
-          component={AttendanceView} 
-          options={commonHeaderOptions('Asistencias')} // Opciones de header para AttendanceView
+        <Stack.Screen
+          name="TeacherAttendanceView"
+          component={TeacherAttendanceView} // Registro explícito para asegurar su acceso
+          options={commonHeaderOptions('Asistencias Profesores')}
         />
       </Stack.Navigator>
 
-      {/* Modal de menú de navegación */}
       <Modal
         visible={menuVisible}
         transparent={true}
@@ -90,16 +108,59 @@ const App = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.menuTitle}>Menú de Navegación</Text>
-            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('Home'); }}>
-              <Text style={styles.menuOption}>Inicio</Text>
+            {/* Botón para cerrar */}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setMenuVisible(false)}>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setMenuVisible(false); navigationRef.navigate('AttendanceView'); }}>
-              <Text style={styles.menuOption}>Asistencias</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setMenuVisible(false)}>
-              <Text style={styles.menuClose}>Cerrar</Text>
-            </TouchableOpacity>
+
+            <Text style={styles.modalTitle}>Menú</Text>
+
+            {/* Opciones */}
+            <View style={styles.menuGrid}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate('Home');
+                }}
+              >
+                <Image source={require('./assets/House.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Inicio</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate(isTeacher ? 'TeacherAttendanceView' : 'AttendanceView');
+                }}
+              >
+                <Image source={require('./assets/Assist.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Asistencias</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  navigationRef.navigate(isTeacher ? 'TeacherEvaluations' : 'Evaluations');
+                }}
+              >
+                <Image source={require('./assets/evaluacion.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Evaluaciones</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  handleLogout();
+                }}
+              >
+                <Image source={require('./assets/logout.png')} style={styles.menuIcon} />
+                <Text style={styles.menuText}>Cerrar sesión</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -109,7 +170,6 @@ const App = () => {
 
 export default App;
 
-// Estilos
 const styles = StyleSheet.create({
   menuBar: {
     width: 25,
@@ -124,24 +184,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    width: '80%',
-    backgroundColor: 'white',
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 15,
     padding: 20,
-    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5,
+    position: 'relative',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#ff5c5c',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  menuTitle: {
+  closeButtonText: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
   },
-  menuOption: {
-    fontSize: 16,
-    paddingVertical: 10,
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#3343a1',
+    marginBottom: 20,
   },
-  menuClose: {
-    fontSize: 16,
-    color: 'red',
-    marginTop: 20,
+  menuGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  menuItem: {
+    width: '40%',
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  menuIcon: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
+  },
+  menuText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#3343a1',
+    textAlign: 'center',
   },
 });
